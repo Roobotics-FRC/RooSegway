@@ -121,7 +121,7 @@ task loadLibraries << {
 
 //noinspection GroovyAssignabilityCheck
 task deploy(dependsOn: ':build') << {
-//    switchTo4373()
+    switchTo4373()
     ssh.settings {
         knownHosts = allowAnyHosts
     }
@@ -137,5 +137,5 @@ task deploy(dependsOn: ':build') << {
         }
     }
     println 'Code successfully loaded and started'
-//    switchBack()
+    switchBack()
 }
