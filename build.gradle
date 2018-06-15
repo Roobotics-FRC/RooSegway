@@ -1,0 +1,141 @@
+group 'org.usfirst.frc.team4373'
+version '2.0.0'
+
+import org.gradle.internal.os.OperatingSystem
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.hidetake:gradle-ssh-plugin:2.7.0'
+        classpath 'commons-io:commons-io:2.4'
+    }
+}
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'checkstyle'
+apply plugin: 'org.hidetake.ssh'
+
+def robotClass = 'org.usfirst.frc.team4373.robot.Robot'
+
+repositories {
+    mavenCentral()
+    maven { url 'http://first.wpi.edu/FRC/roborio/maven/release' }
+    maven { url 'https://raw.githubusercontent.com/Open-RIO/Maven-Mirror/master/m2' }
+    maven { url 'https://raw.githubusercontent.com/Roobotics-FRC/RooMaven/master' }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile(
+            'edu.wpi.first.wpilibj:wpilibj-java:2018.1.1',
+            'edu.wpi.first.ntcore:ntcore-java:4.0.0',
+            'org.opencv:opencv-java:3.2.0',
+            'edu.wpi.first.cscore:cscore-java:1.1.0',
+            'com.ctr-electronics:CTRE_Phoenix:5.2.1.1'
+    )
+}
+
+checkstyle {
+    //noinspection GroovyAssignabilityCheck
+    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    toolVersion = '7.1.2'
+}
+
+
+remotes {
+    roborioStandard {
+        role 'masterNode'
+        host = 'roborio-4373-frc.local'
+        user = 'lvuser'
+    }
+    roborioAdmin {
+        host = 'roborio-4373-frc.local'
+        user = 'admin'
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'edu.wpi.first.wpilibj.RobotBase',
+                'Robot-Class': robotClass
+        )
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+ext.isMacOS = OperatingSystem.current().isMacOsX()
+ext.network = ''
+
+def switchTo4373() {
+    if (isMacOS) {
+        Process curNetProc = Runtime.getRuntime().exec('networksetup -getairportnetwork en0')
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(curNetProc.getInputStream()))
+        String res = stdInput.readLine()
+        network = res.substring(23)
+        curNetProc.waitFor()
+        if (network != '4373') {
+            println 'Connecting to 4373…'
+            Process setProc = Runtime.getRuntime().exec('networksetup -setairportnetwork en0 4373 robotics')
+            setProc.waitFor()
+            println 'Connected to 4373'
+        } else {
+            println 'Already connected to 4373'
+        }
+    }
+}
+
+def switchBack() {
+    if (isMacOS && network != '4373') {
+        println 'Reconnecting to ' + network + '…'
+        Process resetProc = Runtime.getRuntime().exec('networksetup -setairportnetwork en0 ' + network)
+        resetProc.waitFor()
+        println 'Reconnected to ' + network
+    }
+}
+
+//noinspection GroovyAssignabilityCheck
+task loadLibraries << {
+    switchTo4373()
+    ssh.settings {
+        knownHosts = allowAnyHosts
+    }
+    println 'Sending library directories and JRE over SSH…'
+    ssh.run {
+        session(remotes.roborioAdmin) {
+            put from: "${gradle.wpilibAntDir}/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk", into: '/tmp'
+            execute "sed -i -e \'s/^StartupDLLs/;StartupDLLs/\' /etc/natinst/share/ni-rt.ini; opkg remove zulu-jre*; opkg install /tmp/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk; rm /tmp/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk"
+            put from: fileTree(dir: gradle.wpilibLibDir), into: '/usr/local/frc/lib'
+        }
+    }
+    println 'Finished loading libraries'
+    switchBack()
+}
+
+//noinspection GroovyAssignabilityCheck
+task deploy(dependsOn: ':build') << {
+//    switchTo4373()
+    ssh.settings {
+        knownHosts = allowAnyHosts
+    }
+    println 'Sending compiled code over SSH and restarting robot code…'
+    ssh.run {
+        session(remotes.roborioAdmin) {
+            execute "echo '/usr/local/frc/JRE/bin/java -Djava.library.path=/usr/local/frc/lib -jar /home/lvuser/FRCUserProgram.jar' > /home/lvuser/robotCommand && chmod +x /home/lvuser/robotCommand"
+        }
+        session(remotes.roborioStandard) {
+            put from: files(jar.getArchivePath().absolutePath), into: '/home/lvuser/FRCUserProgram.jar'
+            execute ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r"
+            execute "sync"
+        }
+    }
+    println 'Code successfully loaded and started'
+//    switchBack()
+}
