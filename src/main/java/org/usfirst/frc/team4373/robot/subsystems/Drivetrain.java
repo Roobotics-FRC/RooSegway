@@ -15,9 +15,9 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
-    //declare variables
     private WPI_TalonSRX left;
     private WPI_TalonSRX right;
+    //TODO: Add motors if there are two on each side
 
     private static Drivetrain instance;
 
@@ -35,7 +35,6 @@ public class Drivetrain extends Subsystem {
         this.right.setInverted(true);
     }
 
-    //setting methods go here
     public void setLeft(double power) {
         power = safetyCheckSpeed(power);
         this.left.set(power);
@@ -51,7 +50,7 @@ public class Drivetrain extends Subsystem {
         setLeft(power);
     }
 
-    //getting methods go here
+    //TODO: Add methods for getting angle & angular velocity
 
     @Override
     protected void initDefaultCommand() {
