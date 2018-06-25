@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4373.robot;
 
 /**
+ * A class that holds robot constants.
+ *
  * @author aaplmath
  */
 public class RobotMap {
