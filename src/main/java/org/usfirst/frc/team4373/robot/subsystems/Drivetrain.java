@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
-import org.usfirst.frc.team4373.robot.commands.teleop.JoystickControl;
+import org.usfirst.frc.team4373.robot.commands.JoystickControl;
 
 import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
 
