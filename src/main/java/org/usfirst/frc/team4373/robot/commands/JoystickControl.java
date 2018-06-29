@@ -22,8 +22,20 @@ public class JoystickControl extends Command {
     public void execute() {
         double y = OI.getOI().getDriveJoystick().rooGetY();
         double z = OI.getOI().getDriveJoystick().rooGetZ();
-        drivetrain.setRight(y + z);
-        drivetrain.setLeft(y - z);
+
+        double curRight = drivetrain.getRight();
+        double curLeft = drivetrain.getLeft();
+
+        double newRight = y + z;
+        double newLeft = y - z;
+
+        double rightDiff = newRight - curRight;
+        rightDiff = Math.abs(rightDiff) > 0.1 ? Math.signum(rightDiff) * 0.1 : rightDiff;
+        double leftDiff = newLeft - curLeft;
+        leftDiff = Math.abs(leftDiff) > 0.1 ? Math.signum(leftDiff) * 0.1 : leftDiff;
+
+        drivetrain.setRight(curRight + rightDiff);
+        drivetrain.setLeft(curLeft + leftDiff);
     }
 
     @Override

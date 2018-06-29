@@ -75,6 +75,22 @@ public class Drivetrain extends Subsystem {
         this.setRight(power);
     }
 
+    /**
+     * Gets the current power to the right motor from -1 to 1.
+     * @return current power to right motor.
+     */
+    public double getRight() {
+        return right1.get();
+    }
+
+    /**
+     * Gets the current power to the left motor from -1 to 1.
+     * @return current power to left motor.
+     */
+    public double getLeft() {
+        return left1.get();
+    }
+
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(new JoystickControl());
