@@ -76,7 +76,7 @@ ext.network = ''
 
 //noinspection GroovyAssignabilityCheck
 task loadLibraries << {
-    switchTo4373()
+//    switchTo4373()
     ssh.settings {
         knownHosts = allowAnyHosts
     }
@@ -89,7 +89,7 @@ task loadLibraries << {
         }
     }
     println 'Finished loading libraries'
-    switchBack()
+//    switchBack()
 }
 
 //noinspection GroovyAssignabilityCheck
