@@ -15,4 +15,11 @@ public class RobotMap {
     public static final int LEFT_DRIVE_MOTOR_REAR = 5; // Dummy
     public static final int RIGHT_DRIVE_MOTOR_FRONT = 4; // Dummy
     public static final int RIGHT_DRIVE_MOTOR_REAR = 9; // Dummy
+
+    // PID-related costants
+    public static final double kF = 0;
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final int talonTimeoutMs = 1000;
 }
