@@ -11,8 +11,8 @@ public class RobotMap {
     public static final int GYRO_CHANNEL = 0;
 
     // Motor ports
-    public static final int LEFT_DRIVE_MOTOR_FRONT = 0; // Dummy
-    public static final int LEFT_DRIVE_MOTOR_REAR = 1; // Dummy
-    public static final int RIGHT_DRIVE_MOTOR_FRONT = 2; // Dummy
-    public static final int RIGHT_DRIVE_MOTOR_REAR = 3; // Dummy
+    public static final int LEFT_DRIVE_MOTOR_FRONT = 3; // Dummy
+    public static final int LEFT_DRIVE_MOTOR_REAR = 5; // Dummy
+    public static final int RIGHT_DRIVE_MOTOR_FRONT = 4; // Dummy
+    public static final int RIGHT_DRIVE_MOTOR_REAR = 9; // Dummy
 }

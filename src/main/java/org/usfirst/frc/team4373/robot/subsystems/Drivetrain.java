@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4373.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -37,6 +38,11 @@ public class Drivetrain extends Subsystem {
 
         this.left2.follow(this.left1);
         this.right2.follow(this.right1);
+
+        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 1000);
+        this.left1.setSensorPhase(false);
+        this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 1000);
+        this.right1.setSensorPhase(false);
     }
 
     /**
@@ -89,6 +95,38 @@ public class Drivetrain extends Subsystem {
      */
     public double getLeft() {
         return left1.get();
+    }
+
+    /**
+     * Gets the position of the left wheels in units.
+     * @return The position of the left wheels, in 'units'.
+     */
+    public int getLeftPosition() {
+        return left1.getSelectedSensorPosition(0);
+    }
+
+    /**
+     * Gets the velocity of the left wheels in units/0.1s.
+     * @return The velocity of the left wheels, in 'units'/0.1s.
+     */
+    public int getLeftVelocity() {
+        return left1.getSelectedSensorVelocity(0);
+    }
+
+    /**
+     * Gets the position of the right wheels in units.
+     * @return The position of the right wheels, in 'units'.
+     */
+    public int getRightPosition() {
+        return right1.getSelectedSensorPosition(0);
+    }
+
+    /**
+     * Gets the velocity of the right wheels in units/0.1s.
+     * @return The velocity of the right wheels, in 'units'/0.1s.
+     */
+    public int getRightVelocity() {
+        return right1.getSelectedSensorVelocity(0);
     }
 
     @Override

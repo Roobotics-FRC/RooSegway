@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
 /**
  * This is the main robot class.
@@ -16,10 +17,13 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void robotInit() {
+        Drivetrain.getInstance();
+        OI.getOI().getGyro().calibrate();
     }
 
     @Override
     public void teleopInit() {
+        OI.getOI().getGyro().reset();
     }
 
     @Override
