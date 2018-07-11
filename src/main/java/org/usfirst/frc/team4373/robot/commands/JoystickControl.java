@@ -30,9 +30,9 @@ public class JoystickControl extends Command {
         double newLeft = y - z;
 
         double rightDiff = newRight - curRight;
-        rightDiff = Math.abs(rightDiff) > 0.1 ? Math.signum(rightDiff) * 0.1 : rightDiff;
+        rightDiff = Math.abs(rightDiff) > 0.1 ? Math.copySign(0.1, rightDiff) : rightDiff;
         double leftDiff = newLeft - curLeft;
-        leftDiff = Math.abs(leftDiff) > 0.1 ? Math.signum(leftDiff) * 0.1 : leftDiff;
+        leftDiff = Math.abs(leftDiff) > 0.1 ? Math.copySign(0.1, leftDiff) : leftDiff;
 
         drivetrain.setRight(curRight + rightDiff);
         drivetrain.setLeft(curLeft + leftDiff);
