@@ -39,14 +39,16 @@ public class Drivetrain extends Subsystem {
         this.left2.follow(this.left1);
         this.right2.follow(this.right1);
 
-        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, RobotMap.talonTimeoutMs);
+        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
+                RobotMap.talonTimeoutMs);
         this.left1.setSensorPhase(false);
         this.left1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
         this.left1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
         this.left1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
         this.left1.configPeakOutputReverse(1, RobotMap.talonTimeoutMs);
 
-        this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, RobotMap.talonTimeoutMs);
+        this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
+                RobotMap.talonTimeoutMs);
         this.right1.setSensorPhase(false);
         this.right1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
         this.right1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
