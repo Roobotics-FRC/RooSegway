@@ -4,6 +4,13 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team4373.robot.OI;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
+/**
+ * Provides joystick-based control of the apparatus with a "ramping" input mechanism that caps
+ * acceleration at a specific rate.
+ *
+ * @author aaplmath
+ * @author Samasaur
+ */
 public class JoystickControl extends Command {
 
     private Drivetrain drivetrain;
@@ -29,6 +36,8 @@ public class JoystickControl extends Command {
         double newRight = y + z;
         double newLeft = y - z;
 
+        // TODO: All of this logic should be ditched in favor of using PID setpoints
+        // JavaDoc comments at the top of this file should be modified accordingly once changed
         double rightDiff = newRight - curRight;
         rightDiff = Math.abs(rightDiff) > 0.1 ? Math.copySign(0.1, rightDiff) : rightDiff;
         double leftDiff = newLeft - curLeft;

@@ -9,6 +9,12 @@ import org.usfirst.frc.team4373.robot.commands.JoystickControl;
 
 import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
 
+/**
+ * Programmatic representation of physical drivetrain components. Implements TalonSRX-based PID.
+ *
+ * @author aaplmath
+ * @author Samasaur
+ */
 public class Drivetrain extends Subsystem {
 
     private WPI_TalonSRX left1;
@@ -28,17 +34,17 @@ public class Drivetrain extends Subsystem {
         this.right1 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_FRONT);
         this.right2 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_REAR);
 
-        /*
-        Make sure that the wheels stay still if they are set to 0.
-         */
+        // Make sure that the wheels stay still if they are set to 0
         this.left1.setNeutralMode(NeutralMode.Brake);
         this.left2.setNeutralMode(NeutralMode.Brake);
         this.right1.setNeutralMode(NeutralMode.Brake);
         this.right2.setNeutralMode(NeutralMode.Brake);
 
+        // Enable follower mode—motors 1 are master
         this.left2.follow(this.left1);
         this.right2.follow(this.right1);
 
+        // Configure sensors and PID
         this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
                 RobotMap.talonTimeoutMs);
         this.left1.setSensorPhase(false);
