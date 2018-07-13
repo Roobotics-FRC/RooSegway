@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4373.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team4373.robot.OI;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
@@ -39,9 +40,9 @@ public class JoystickControl extends Command {
         // TODO: All of this logic should be ditched in favor of using PID setpoints
         // JavaDoc comments at the top of this file should be modified accordingly once changed
         double rightDiff = newRight - curRight;
-        rightDiff = Math.abs(rightDiff) > 0.1 ? Math.copySign(0.1, rightDiff) : rightDiff;
+        rightDiff = Math.abs(rightDiff) > 0.01 ? Math.copySign(0.01, rightDiff) : rightDiff;
         double leftDiff = newLeft - curLeft;
-        leftDiff = Math.abs(leftDiff) > 0.1 ? Math.copySign(0.1, leftDiff) : leftDiff;
+        leftDiff = Math.abs(leftDiff) > 0.01 ? Math.copySign(0.01, leftDiff) : leftDiff;
 
         drivetrain.setRight(curRight + rightDiff);
         drivetrain.setLeft(curLeft + leftDiff);

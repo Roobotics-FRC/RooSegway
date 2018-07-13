@@ -56,20 +56,15 @@ public class Drivetrain extends Subsystem {
         this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
                 RobotMap.talonTimeoutMs);
         this.right1.setSensorPhase(false);
-        this.right1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
-        this.right1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
-        this.right1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.right1.configPeakOutputReverse(1, RobotMap.talonTimeoutMs);
 
-        this.left1.config_kF(0, RobotMap.kF, RobotMap.talonTimeoutMs);
-        this.left1.config_kP(0, RobotMap.kP, RobotMap.talonTimeoutMs);
-        this.left1.config_kI(0, RobotMap.kI, RobotMap.talonTimeoutMs);
-        this.left1.config_kD(0, RobotMap.kD, RobotMap.talonTimeoutMs);
-
-        this.right1.config_kF(0, RobotMap.kF, RobotMap.talonTimeoutMs);
-        this.right1.config_kP(0, RobotMap.kP, RobotMap.talonTimeoutMs);
-        this.right1.config_kI(0, RobotMap.kI, RobotMap.talonTimeoutMs);
-        this.right1.config_kD(0, RobotMap.kD, RobotMap.talonTimeoutMs);
+        this.right1.configPeakOutputForward(1, 0);
+        this.right2.configPeakOutputForward(1, 0);
+        this.left1.configPeakOutputForward(1, 0);
+        this.left2.configPeakOutputForward(1, 0);
+        this.right1.configPeakOutputReverse(-1, 0);
+        this.right2.configPeakOutputReverse(-1, 0);
+        this.left1.configPeakOutputReverse(-1, 0);
+        this.left2.configPeakOutputReverse(-1, 0);
     }
 
     /**
@@ -82,6 +77,7 @@ public class Drivetrain extends Subsystem {
     public void setLeft(double power) {
         power = safetyCheckSpeed(power);
         this.left1.set(power);
+        this.left2.set(power);
     }
 
     /**
@@ -94,6 +90,7 @@ public class Drivetrain extends Subsystem {
     public void setRight(double power) {
         power = safetyCheckSpeed(power);
         this.right1.set(power);
+        this.right2.set(power);
     }
 
     /**
