@@ -77,7 +77,6 @@ public class Drivetrain extends Subsystem {
     public void setLeft(double power) {
         power = safetyCheckSpeed(power);
         this.left1.set(power);
-        this.left2.set(power);
     }
 
     /**
@@ -90,7 +89,6 @@ public class Drivetrain extends Subsystem {
     public void setRight(double power) {
         power = safetyCheckSpeed(power);
         this.right1.set(power);
-        this.right2.set(power);
     }
 
     /**
