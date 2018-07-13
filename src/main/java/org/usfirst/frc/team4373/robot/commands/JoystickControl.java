@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4373.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.usfirst.frc.team4373.robot.OI;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
@@ -14,6 +16,8 @@ import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 public class JoystickControl extends Command {
 
     private Drivetrain drivetrain;
+    private StringBuilder sb = new StringBuilder();
+    private int loops = 0;
 
     public JoystickControl() {
         requires(this.drivetrain = Drivetrain.getInstance());
@@ -28,23 +32,29 @@ public class JoystickControl extends Command {
     @Override
     public void execute() {
         double y = OI.getOI().getDriveJoystick().rooGetY();
-        double z = OI.getOI().getDriveJoystick().rooGetZ();
+        sb.append("\tout:").append(drivetrain.left1.getMotorOutputPercent());
+        sb.append("\tspd:").append(drivetrain.getLeftVelocity());
 
-        double curRight = drivetrain.getRight();
-        double curLeft = drivetrain.getLeft();
+        if (OI.getOI().getDriveJoystick().getRawButton(1)) { /* Speed mode */
+            /*
+             * 4096 Units/Rev * 500 RPM / 600 100ms/min in either direction:
+             * velocity setpoint is in units/100ms */
+            double targetVelocity_UnitsPer100ms = y * 4096 * 500.0 / 600; /* 1500 RPM in either direction */
+            drivetrain.left1.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
+            drivetrain.right1.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
+            /* append more signals to print when in speed mode. */
+            sb.append("\terr:").append(drivetrain.left1.getClosedLoopError(0));
+            sb.append("\ttrg:").append(targetVelocity_UnitsPer100ms);
+        } else {
+            /* Percent output mode */
+            drivetrain.left1.set(ControlMode.PercentOutput, y);
+        }
 
-        double newRight = y + z;
-        double newLeft = y - z;
-
-        // TODO: All of this logic should be ditched in favor of using PID setpoints
-        // JavaDoc comments at the top of this file should be modified accordingly once changed
-        double rightDiff = newRight - curRight;
-        rightDiff = Math.abs(rightDiff) > 0.1 ? Math.copySign(0.1, rightDiff) : rightDiff;
-        double leftDiff = newLeft - curLeft;
-        leftDiff = Math.abs(leftDiff) > 0.1 ? Math.copySign(0.1, leftDiff) : leftDiff;
-
-        drivetrain.setRight(curRight + rightDiff);
-        drivetrain.setLeft(curLeft + leftDiff);
+        if (++loops >= 10) {
+            loops = 0;
+            System.out.println(sb.toString());
+        }
+        sb.setLength(0);
     }
 
     @Override

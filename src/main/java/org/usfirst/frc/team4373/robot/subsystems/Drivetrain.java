@@ -17,10 +17,10 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
-    private WPI_TalonSRX left1;
-    private WPI_TalonSRX left2;
-    private WPI_TalonSRX right1;
-    private WPI_TalonSRX right2;
+    public WPI_TalonSRX left1;
+    public WPI_TalonSRX left2;
+    public WPI_TalonSRX right1;
+    public WPI_TalonSRX right2;
 
     private static Drivetrain instance;
 
@@ -47,19 +47,19 @@ public class Drivetrain extends Subsystem {
         // Configure sensors and PID
         this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
                 RobotMap.talonTimeoutMs);
-        this.left1.setSensorPhase(false);
+        this.left1.setSensorPhase(true);
         this.left1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
         this.left1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
         this.left1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.left1.configPeakOutputReverse(1, RobotMap.talonTimeoutMs);
+        this.left1.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
 
         this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
                 RobotMap.talonTimeoutMs);
-        this.right1.setSensorPhase(false);
+        this.right1.setSensorPhase(true);
         this.right1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
         this.right1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
         this.right1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.right1.configPeakOutputReverse(1, RobotMap.talonTimeoutMs);
+        this.right1.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
 
         this.left1.config_kF(0, RobotMap.kF, RobotMap.talonTimeoutMs);
         this.left1.config_kP(0, RobotMap.kP, RobotMap.talonTimeoutMs);
