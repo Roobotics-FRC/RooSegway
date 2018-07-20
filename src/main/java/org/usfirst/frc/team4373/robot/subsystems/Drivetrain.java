@@ -3,6 +3,7 @@ package org.usfirst.frc.team4373.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.commands.JoystickControl;
@@ -17,10 +18,16 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
+    public enum Gear {
+        LOW, HIGH
+    }
+
     private WPI_TalonSRX left1;
     private WPI_TalonSRX left2;
     private WPI_TalonSRX right1;
     private WPI_TalonSRX right2;
+    private Servo rightServo;
+    private Servo leftServo;
 
     private static Drivetrain instance;
 
@@ -50,21 +57,30 @@ public class Drivetrain extends Subsystem {
         this.left1.setSensorPhase(false);
         this.left1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
         this.left1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
-        this.left1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.left1.configPeakOutputReverse(1, RobotMap.talonTimeoutMs);
 
         this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
                 RobotMap.talonTimeoutMs);
         this.right1.setSensorPhase(false);
 
-        this.right1.configPeakOutputForward(1, 0);
-        this.right2.configPeakOutputForward(1, 0);
-        this.left1.configPeakOutputForward(1, 0);
-        this.left2.configPeakOutputForward(1, 0);
-        this.right1.configPeakOutputReverse(-1, 0);
-        this.right2.configPeakOutputReverse(-1, 0);
-        this.left1.configPeakOutputReverse(-1, 0);
-        this.left2.configPeakOutputReverse(-1, 0);
+        this.right1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
+        this.right2.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
+        this.left1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
+        this.left2.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
+        this.right1.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
+        this.right2.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
+        this.left1.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
+        this.left2.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
+        this.right1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
+        this.right2.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
+        this.left1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
+        this.left2.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
+        this.right1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
+        this.right2.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
+        this.left1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
+        this.left2.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
+
+        this.rightServo = new Servo(RobotMap.RIGHT_SERVO_PORT);
+        // this.leftServo = new Servo(RobotMap.LEFT_SERVO_PORT);
     }
 
     /**
@@ -101,6 +117,25 @@ public class Drivetrain extends Subsystem {
     public void setBoth(double power) {
         this.setLeft(power);
         this.setRight(power);
+    }
+
+    /**
+     * Shifts both gearboxes into the specified gear.
+     * @param gear the enum Gear state into which to switch.
+     */
+    public void shift(Gear gear) {
+        switch (gear) {
+            case LOW:
+                // this.leftServo.set(0);
+                this.rightServo.set(0);
+                break;
+            case HIGH:
+                // this.leftServo.set(1);
+                this.rightServo.set(1);
+                break;
+            default:
+                break;
+        }
     }
 
     /**

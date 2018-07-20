@@ -46,6 +46,13 @@ public class JoystickControl extends Command {
 
         drivetrain.setRight(curRight + rightDiff);
         drivetrain.setLeft(curLeft + leftDiff);
+
+        // Shifting debug
+        if (OI.getOI().getDriveJoystick().getRawButton(6)) {
+            this.drivetrain.shift(Drivetrain.Gear.HIGH);
+        } else if (OI.getOI().getDriveJoystick().getRawButton(4)) {
+            this.drivetrain.shift(Drivetrain.Gear.LOW);
+        }
     }
 
     @Override
