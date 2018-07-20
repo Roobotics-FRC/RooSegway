@@ -2,6 +2,7 @@ package org.usfirst.frc.team4373.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4373.robot.OI;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
@@ -53,6 +54,8 @@ public class JoystickControl extends Command {
         } else if (OI.getOI().getDriveJoystick().getRawButton(4)) {
             this.drivetrain.shift(Drivetrain.Gear.LOW);
         }
+
+        SmartDashboard.putNumber("Right Velocity", this.drivetrain.getRightVelocity());
     }
 
     @Override
