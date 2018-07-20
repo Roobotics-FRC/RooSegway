@@ -80,7 +80,7 @@ public class Drivetrain extends Subsystem {
         this.left2.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
 
         this.rightServo = new Servo(RobotMap.RIGHT_SERVO_PORT);
-        // this.leftServo = new Servo(RobotMap.LEFT_SERVO_PORT);
+        this.leftServo = new Servo(RobotMap.LEFT_SERVO_PORT);
     }
 
     /**
@@ -126,11 +126,11 @@ public class Drivetrain extends Subsystem {
     public void shift(Gear gear) {
         switch (gear) {
             case LOW:
-                // this.leftServo.set(0);
+                this.leftServo.set(0);
                 this.rightServo.set(0);
                 break;
             case HIGH:
-                // this.leftServo.set(1);
+                this.leftServo.set(1);
                 this.rightServo.set(1);
                 break;
             default:

@@ -56,6 +56,7 @@ public class JoystickControl extends Command {
         }
 
         SmartDashboard.putNumber("Right Velocity", this.drivetrain.getRightVelocity());
+        SmartDashboard.putNumber("Left Velocity", this.drivetrain.getLeftVelocity());
     }
 
     @Override
