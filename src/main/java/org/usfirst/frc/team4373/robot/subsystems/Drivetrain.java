@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4373.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -17,10 +18,10 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
-    public WPI_TalonSRX left1;
-    public WPI_TalonSRX left2;
-    public WPI_TalonSRX right1;
-    public WPI_TalonSRX right2;
+    private WPI_TalonSRX left1;
+    private WPI_TalonSRX left2;
+    private WPI_TalonSRX right1;
+    private WPI_TalonSRX right2;
 
     private static Drivetrain instance;
 
@@ -85,6 +86,16 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
+     * Sets the left wheels to the specified power in the specified control mode.
+     * @param controlMode the mode in which to control the motors.
+     * @param power the power (mode-specific) to supply to the motors.
+     */
+    public void setLeft(ControlMode controlMode, double power) {
+        power = safetyCheckSpeed(power);
+        this.left1.set(controlMode, power);
+    }
+
+    /**
      * Sets the right wheels to the specified power.
      * As the motor is inverted, positive values will make the robot go forward.
      *
@@ -94,6 +105,16 @@ public class Drivetrain extends Subsystem {
     public void setRight(double power) {
         power = safetyCheckSpeed(power);
         this.right1.set(power);
+    }
+
+    /**
+     * Sets the right wheels to the specified power in the specified control mode.
+     * @param controlMode the mode in which to control the motors.
+     * @param power the power (mode-specific) to supply to the motors.
+     */
+    public void setRight(ControlMode controlMode, double power) {
+        power = safetyCheckSpeed(power);
+        this.right1.set(controlMode, power);
     }
 
     /**
@@ -112,16 +133,24 @@ public class Drivetrain extends Subsystem {
      * Gets the current power to the right motor from -1 to 1.
      * @return current power to right motor.
      */
-    public double getRight() {
-        return right1.get();
+    public double getRightPercentOutput() {
+        return right1.getMotorOutputPercent();
     }
 
     /**
      * Gets the current power to the left motor from -1 to 1.
      * @return current power to left motor.
      */
-    public double getLeft() {
-        return left1.get();
+    public double getLeftPercentOutput() {
+        return left1.getMotorOutputPercent();
+    }
+
+    /**
+     * Gets the closed-loop error amount from the left motor.
+     * @return error amount from left motors.
+     */
+    public double getLeftClosedLoopError() {
+        return left1.getClosedLoopError(0);
     }
 
     /**

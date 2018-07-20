@@ -2,7 +2,6 @@ package org.usfirst.frc.team4373.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.usfirst.frc.team4373.robot.OI;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
@@ -32,22 +31,35 @@ public class JoystickControl extends Command {
     @Override
     public void execute() {
         double y = OI.getOI().getDriveJoystick().rooGetY();
-        sb.append("\tout:").append(drivetrain.left1.getMotorOutputPercent());
+        double z = OI.getOI().getDriveJoystick().rooGetZ(); // TODO: Account for z in closed-loop mode
+        sb.append("\tout:").append(drivetrain.getLeftPercentOutput());
         sb.append("\tspd:").append(drivetrain.getLeftVelocity());
 
         if (OI.getOI().getDriveJoystick().getRawButton(1)) { /* Speed mode */
             /*
              * 4096 Units/Rev * 500 RPM / 600 100ms/min in either direction:
              * velocity setpoint is in units/100ms */
-            double targetVelocity_UnitsPer100ms = y * 4096 * 500.0 / 600; /* 1500 RPM in either direction */
-            drivetrain.left1.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
-            drivetrain.right1.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
+            double targetVelocityPer100ms = y * 4096 * 500.0 / 600; /* 1500 RPM in either direction */
+            drivetrain.setLeft(ControlMode.Velocity, targetVelocityPer100ms);
+            drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
             /* append more signals to print when in speed mode. */
-            sb.append("\terr:").append(drivetrain.left1.getClosedLoopError(0));
-            sb.append("\ttrg:").append(targetVelocity_UnitsPer100ms);
+            sb.append("\terr:").append(drivetrain.getLeftClosedLoopError());
+            sb.append("\ttrg:").append(targetVelocityPer100ms);
         } else {
-            /* Percent output mode */
-            drivetrain.left1.set(ControlMode.PercentOutput, y);
+            // Percent output—fall back on manual
+            double curRight = drivetrain.getRightPercentOutput();
+            double curLeft = drivetrain.getLeftPercentOutput();
+
+            double newRight = y + z;
+            double newLeft = y - z;
+
+            double rightDiff = newRight - curRight;
+            rightDiff = Math.abs(rightDiff) > 0.01 ? Math.copySign(0.01, rightDiff) : rightDiff;
+            double leftDiff = newLeft - curLeft;
+            leftDiff = Math.abs(leftDiff) > 0.01 ? Math.copySign(0.01, leftDiff) : leftDiff;
+
+            drivetrain.setLeft(ControlMode.PercentOutput, curLeft + leftDiff);
+            drivetrain.setRight(ControlMode.PercentOutput, curRight + rightDiff);
         }
 
         if (++loops >= 10) {
