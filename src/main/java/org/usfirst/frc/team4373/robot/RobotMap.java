@@ -17,8 +17,8 @@ public class RobotMap {
     public static final int RIGHT_DRIVE_MOTOR_REAR = 9; // Dummy
 
     // PID-related costants
-    public static final double kF = 0.34;
-    public static final double kP = 0.2;
+    public static final double kF = 0.982; // At 100% output, 503 native units = 512 sensor units
+    public static final double kP = 1;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final int talonTimeoutMs = 1000;

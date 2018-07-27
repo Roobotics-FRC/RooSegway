@@ -41,6 +41,12 @@ public class Drivetrain extends Subsystem {
         this.right1.setNeutralMode(NeutralMode.Brake);
         this.right2.setNeutralMode(NeutralMode.Brake);
 
+        // Invert all motors
+        this.left1.setInverted(true);
+        this.left2.setInverted(true);
+        this.right1.setInverted(true);
+        this.right2.setInverted(true);
+
         // Enable follower mode—motors 1 are master
         this.left2.follow(this.left1);
         this.right2.follow(this.right1);
@@ -48,7 +54,7 @@ public class Drivetrain extends Subsystem {
         // Configure sensors and PID
         this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
                 RobotMap.talonTimeoutMs);
-        this.left1.setSensorPhase(true);
+        this.left1.setSensorPhase(false);
         this.left1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
         this.left1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
         this.left1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
@@ -56,7 +62,7 @@ public class Drivetrain extends Subsystem {
 
         this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
                 RobotMap.talonTimeoutMs);
-        this.right1.setSensorPhase(true);
+        this.right1.setSensorPhase(false);
         this.right1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
         this.right1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
         this.right1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
@@ -91,7 +97,9 @@ public class Drivetrain extends Subsystem {
      * @param power the power (mode-specific) to supply to the motors.
      */
     public void setLeft(ControlMode controlMode, double power) {
-        power = safetyCheckSpeed(power);
+        if (controlMode == ControlMode.PercentOutput) {
+            power = safetyCheckSpeed(power);
+        }
         this.left1.set(controlMode, power);
     }
 
@@ -113,7 +121,9 @@ public class Drivetrain extends Subsystem {
      * @param power the power (mode-specific) to supply to the motors.
      */
     public void setRight(ControlMode controlMode, double power) {
-        power = safetyCheckSpeed(power);
+        if (controlMode == ControlMode.PercentOutput) {
+            power = safetyCheckSpeed(power);
+        }
         this.right1.set(controlMode, power);
     }
 
@@ -130,19 +140,35 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
-     * Gets the current power to the right motor from -1 to 1.
-     * @return current power to right motor.
+     * Gets the left motor power.
+     * @return left motor power on scale from -1 to 1.
      */
-    public double getRightPercentOutput() {
-        return right1.getMotorOutputPercent();
+    public double getLeft() {
+        return left1.get();
     }
 
     /**
-     * Gets the current power to the left motor from -1 to 1.
-     * @return current power to left motor.
+     * Gets the right motor power.
+     * @return right motor power on scale from -1 to 1.
+     */
+    public double getRight() {
+        return right1.get();
+    }
+
+    /**
+     * Gets the percentage of current left motor output.
+     * @return current left motor output percentage.
      */
     public double getLeftPercentOutput() {
         return left1.getMotorOutputPercent();
+    }
+
+    /**
+     * Gets the percentage of current right motor output.
+     * @return current right motor output percentage.
+     */
+    public double getRightPercentOutput() {
+        return right1.getMotorOutputPercent();
     }
 
     /**
