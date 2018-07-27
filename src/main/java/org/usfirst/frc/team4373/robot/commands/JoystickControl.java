@@ -31,7 +31,7 @@ public class JoystickControl extends Command {
     @Override
     public void execute() {
         double y = OI.getOI().getDriveJoystick().rooGetY();
-        double z = OI.getOI().getDriveJoystick().rooGetZ(); // TODO: Account for z in closed-loop mode
+        double z = OI.getOI().getDriveJoystick().rooGetZ(); // TODO: Account for z in c-l mode
         sb.append("\tout:").append(drivetrain.getLeftPercentOutput());
         sb.append("\tspd:").append(drivetrain.getLeftVelocity());
 
@@ -39,7 +39,7 @@ public class JoystickControl extends Command {
             /*
              * 4096 Units/Rev * 500 RPM / 600 100ms/min in either direction:
              * velocity setpoint is in units/100ms */
-            double targetVelocityPer100ms = y * 4096 * 500.0 / 600; /* 1500 RPM in either direction */
+            double targetVelocityPer100ms = y * 4096 * 500.0 / 600; // 1500 RPM in either direction
             drivetrain.setLeft(ControlMode.Velocity, targetVelocityPer100ms);
             drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
             /* append more signals to print when in speed mode. */
