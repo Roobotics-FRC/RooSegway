@@ -41,8 +41,7 @@ public class JoystickControl extends Command {
              * 4096 (Units/Rev) * 5300 (RPM) * 1:24 (gearbox ratio) / 600 (unit of 100ms/min) in either direction:
              * velocity setpoint is in units/100ms */
             // 1500 RPM in either direction
-            // TODO: Replace 1 with y when done debugging
-            double targetVelocityPer100ms = 1 * 4096 * 5300 / 24 / 600;
+            double targetVelocityPer100ms = y * 4096 * 5300 / 24 / 600;
             drivetrain.setLeft(ControlMode.Velocity, targetVelocityPer100ms);
             drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
             /* append more signals to print when in speed mode. */
