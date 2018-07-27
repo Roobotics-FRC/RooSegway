@@ -34,21 +34,20 @@ public class JoystickControl extends Command {
         double y = OI.getOI().getDriveJoystick().rooGetY();
         double z = OI.getOI().getDriveJoystick().rooGetZ(); // TODO: Account for z in c-l mode
         sb.append("\tout:").append(drivetrain.getLeftPercentOutput());
-        sb.append("\tspd:").append(drivetrain.getLeftVelocity());
+        sb.append("\t\tspd:").append(drivetrain.getLeftVelocity());
 
         if (OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
             /*
-             * 4096 Units/Rev * 500 RPM / 600 100ms/min in either direction:
+             * 4096 (Units/Rev) * 5300 (RPM) * 1:24 (gearbox ratio) / 600 (unit of 100ms/min) in either direction:
              * velocity setpoint is in units/100ms */
             // 1500 RPM in either direction
-            // FIXME: Randomly dividing by 6 to reduce error
-            // (this should probably be addressed with some actual math)
-            double targetVelocityPer100ms = y * 4096 * 500.0 / 600 / 6;
+            // TODO: Replace 1 with y when done debugging
+            double targetVelocityPer100ms = 1 * 4096 * 5300 / 24 / 600;
             drivetrain.setLeft(ControlMode.Velocity, targetVelocityPer100ms);
             drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
             /* append more signals to print when in speed mode. */
-            sb.append("\terr:").append(drivetrain.getLeftClosedLoopError());
-            sb.append("\ttrg:").append(targetVelocityPer100ms);
+            sb.append("\t\terr:").append(drivetrain.getLeftClosedLoopError());
+            sb.append("\t\ttrg:").append(targetVelocityPer100ms);
         } else {
             // FIXME: always returns 0
             // Percent output—fall back on manual
