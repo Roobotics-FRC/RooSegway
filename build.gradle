@@ -35,7 +35,7 @@ dependencies {
             'edu.wpi.first.ntcore:ntcore-java:4.0.0',
             'org.opencv:opencv-java:3.2.0',
             'edu.wpi.first.cscore:cscore-java:1.1.0',
-            'com.ctr-electronics:CTRE_Phoenix:5.2.1.1'
+            'com.ctr-electronics:CTRE_Phoenix:5.7.1.0'
     )
 }
 

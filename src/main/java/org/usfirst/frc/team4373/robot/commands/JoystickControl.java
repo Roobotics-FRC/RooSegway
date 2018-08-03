@@ -31,6 +31,7 @@ public class JoystickControl extends Command {
 
     @Override
     public void execute() {
+        SmartDashboard.putNumberArray("PYPR", drivetrain.getPigeonYawPitchRoll());
         double y = OI.getOI().getDriveJoystick().rooGetY();
         double z = OI.getOI().getDriveJoystick().rooGetZ(); // TODO: Account for z in c-l mode
         sb.append("\tout:").append(drivetrain.getLeftPercentOutput());
@@ -38,7 +39,8 @@ public class JoystickControl extends Command {
 
         if (OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
             /*
-             * 4096 (Units/Rev) * 5300 (RPM) * 1:24 (gearbox ratio) / 600 (unit of 100ms/min) in either direction:
+             * 4096 (Units/Rev) * 5300 (RPM) * 1:24 (gearbox ratio) / 600 (unit of 100ms/min)
+             * in each direction
              * velocity setpoint is in units/100ms */
             // 1500 RPM in either direction
             double targetVelocityPer100ms = y * 4096 * 5300 / 24 / 600;
