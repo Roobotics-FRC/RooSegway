@@ -89,6 +89,13 @@ public class Drivetrain extends Subsystem {
                 RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_0);
     }
 
+    // -- DEBUG METHOD --
+
+    /**
+     * Gets the yaw, pitch, and roll from the Pigeon.
+     * @return a three-element array containing in indices 0, 1, and 2 the current
+     yaw, pitch, and roll, respectively.
+     */
     public double[] getPigeonYawPitchRoll() {
         double[] arr = new double[3];
         this.leftPigeon.getYawPitchRoll(arr);
