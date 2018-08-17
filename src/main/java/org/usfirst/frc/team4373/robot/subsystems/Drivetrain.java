@@ -1,9 +1,6 @@
 package org.usfirst.frc.team4373.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -20,9 +17,9 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
-    private WPI_TalonSRX left1;
+    public WPI_TalonSRX left1;
     private WPI_TalonSRX left2;
-    private WPI_TalonSRX right1;
+    public WPI_TalonSRX right1;
     private WPI_TalonSRX right2;
 
     private PigeonIMU leftPigeon;
@@ -56,37 +53,70 @@ public class Drivetrain extends Subsystem {
         this.left2.follow(this.left1);
         this.right2.follow(this.right1);
 
-        // Configure outputs
-        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.SPEED_PID_IDX,
-                RobotMap.talonTimeoutMs);
         this.left1.setSensorPhase(false);
-        this.left1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
-        this.left1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
-        this.left1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.left1.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
-
-        this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                RobotMap.SPEED_PID_IDX, RobotMap.talonTimeoutMs);
         this.right1.setSensorPhase(false);
-        this.right1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
-        this.right1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
-        this.right1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.right1.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
+
+        // Echo left to remote 0
+        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+                RobotMap.SPEED_PID_IDX,
+                RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configRemoteFeedbackFilter(this.left1.getDeviceID(),
+                RemoteSensorSource.TalonSRX_SelectedSensor,
+                RobotMap.REMOTE_SENSOR_0,
+                RobotMap.TALON_TIMEOUT_MS);
+        // Set up difference
+        this.right1.configSensorTerm(SensorTerm.Diff1,
+                FeedbackDevice.RemoteSensor0,
+                RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configSensorTerm(SensorTerm.Diff0,
+                FeedbackDevice.QuadEncoder,
+                RobotMap.TALON_TIMEOUT_MS);
+        // Use difference output as sensor
+        this.right1.configSelectedFeedbackSensor(FeedbackDevice.SensorDifference,
+                RobotMap.SPEED_PID_IDX,
+                RobotMap.TALON_TIMEOUT_MS);
+
+        this.right1.configRemoteFeedbackFilter(leftPigeon.getDeviceID(),
+                RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_0);
+
+        this.right1.configSelectedFeedbackCoefficient(1.0,
+                RobotMap.SPEED_PID_IDX, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor1,
+                RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configSelectedFeedbackCoefficient(
+                RobotMap.NATIVE_UNITS_PER_ROTATION / RobotMap.PIGEON_UNITS_PER_ROTATION,
+                RobotMap.HEADING_PID_IDX, RobotMap.HEADING_PID_IDX);
+
+
+        this.left1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS);
+
+        this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS);
 
         // Configure speed PID
-        this.left1.config_kF(RobotMap.SPEED_PID_IDX, RobotMap.kF, RobotMap.talonTimeoutMs);
-        this.left1.config_kP(RobotMap.SPEED_PID_IDX, RobotMap.kP, RobotMap.talonTimeoutMs);
-        this.left1.config_kI(RobotMap.SPEED_PID_IDX, RobotMap.kI, RobotMap.talonTimeoutMs);
-        this.left1.config_kD(RobotMap.SPEED_PID_IDX, RobotMap.kD, RobotMap.talonTimeoutMs);
+        this.right1.config_kF(RobotMap.SPEED_PID_IDX,
+                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.config_kP(RobotMap.SPEED_PID_IDX,
+                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.config_kI(RobotMap.SPEED_PID_IDX,
+                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.config_kD(RobotMap.SPEED_PID_IDX,
+                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS);
 
-        this.right1.config_kF(RobotMap.SPEED_PID_IDX, RobotMap.kF, RobotMap.talonTimeoutMs);
-        this.right1.config_kP(RobotMap.SPEED_PID_IDX, RobotMap.kP, RobotMap.talonTimeoutMs);
-        this.right1.config_kI(RobotMap.SPEED_PID_IDX, RobotMap.kI, RobotMap.talonTimeoutMs);
-        this.right1.config_kD(RobotMap.SPEED_PID_IDX, RobotMap.kD, RobotMap.talonTimeoutMs);
+        this.right1.config_kF(RobotMap.HEADING_PID_IDX,
+                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.config_kP(RobotMap.HEADING_PID_IDX,
+                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.config_kI(RobotMap.HEADING_PID_IDX,
+                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.config_kD(RobotMap.HEADING_PID_IDX,
+                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS);
 
-        // Configure heading PID
-        this.left1.configRemoteFeedbackFilter(leftPigeon.getDeviceID(),
-                RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_0);
     }
 
     // -- DEBUG METHOD --
