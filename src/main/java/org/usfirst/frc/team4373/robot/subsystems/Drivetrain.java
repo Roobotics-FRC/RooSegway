@@ -41,6 +41,9 @@ public class Drivetrain extends Subsystem {
         this.right1 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_FRONT);
         this.right2 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_REAR);
 
+        this.left1.setInverted(true);
+        this.left2.setInverted(true);
+
         // Make sure that the wheels stay still if they are set to 0
         this.left1.setNeutralMode(NeutralMode.Brake);
         this.left2.setNeutralMode(NeutralMode.Brake);
