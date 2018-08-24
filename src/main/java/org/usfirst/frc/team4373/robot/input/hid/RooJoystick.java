@@ -63,12 +63,6 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
         return this.filter(this.getThrottle());
     }
 
-    @Override
-    public double getAxis(Joystick.AxisType axis) {
-        return this.getAxis(axis.value);
-    }
-
-
     /**
      * Returns the filtered value of a joystick access.
      *
@@ -97,8 +91,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
      * @return the joystick angle
      */
     public double getAngle() {
-        double x = this.getAxis(AxisType.kX);
-        double y = this.getAxis(AxisType.kY);
+        double x = this.getAxis(0); //kX
+        double y = this.getAxis(1); //kY
         return Math.atan(y / x);
     }
 }
