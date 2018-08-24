@@ -102,40 +102,47 @@ def switchBack() {
 }
 
 //noinspection GroovyAssignabilityCheck
-task loadLibraries << {
+task loadLibraries {
+    doLast {
 //    switchTo4373()
-    ssh.settings {
-        knownHosts = allowAnyHosts
-    }
-    println 'Sending library directories and JRE over SSH…'
-    ssh.run {
-        session(remotes.roborioAdmin) {
-            put from: "${gradle.wpilibAntDir}/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk", into: '/tmp'
-            execute "sed -i -e \'s/^StartupDLLs/;StartupDLLs/\' /etc/natinst/share/ni-rt.ini; opkg remove zulu-jre*; opkg install /tmp/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk; rm /tmp/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk"
-            put from: fileTree(dir: gradle.wpilibLibDir), into: '/usr/local/frc/lib'
+        ssh.settings {
+            knownHosts = allowAnyHosts
         }
-    }
-    println 'Finished loading libraries'
+        println 'Sending library directories and JRE over SSH…'
+        ssh.run {
+            session(remotes.roborioAdmin) {
+                put from: "${gradle.wpilibAntDir}/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk", into: '/tmp'
+                execute "sed -i -e \'s/^StartupDLLs/;StartupDLLs/\' /etc/natinst/share/ni-rt.ini; opkg remove zulu-jre*; opkg install /tmp/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk; rm /tmp/zulu-jre_1.8.0-131_cortexa9-vfpv3.ipk"
+                put from: fileTree(dir: gradle.wpilibLibDir), into: '/usr/local/frc/lib'
+            }
+        }
+        println 'Finished loading libraries'
 //    switchBack()
+    }
 }
 
 //noinspection GroovyAssignabilityCheck
-task deploy(dependsOn: ':build') << {
+task deploy(dependsOn: ':build') {
+    doLast {
 //    switchTo4373()
-    ssh.settings {
-        knownHosts = allowAnyHosts
-    }
-    println 'Sending compiled code over SSH and restarting robot code…'
-    ssh.run {
-        session(remotes.roborioAdmin) {
-            execute "echo '/usr/local/frc/JRE/bin/java -Djava.library.path=/usr/local/frc/lib -jar /home/lvuser/FRCUserProgram.jar' > /home/lvuser/robotCommand && chmod +x /home/lvuser/robotCommand"
+        ssh.settings {
+            knownHosts = allowAnyHosts
         }
-        session(remotes.roborioStandard) {
-            put from: files(jar.getArchivePath().absolutePath), into: '/home/lvuser/FRCUserProgram.jar'
-            execute ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r"
-            execute "sync"
+        println 'Sending compiled code over SSH and restarting robot code…'
+        ssh.run {
+            session(remotes.roborioAdmin) {
+                execute "echo '/usr/local/frc/JRE/bin/java -Djava.library.path=/usr/local/frc/lib -jar /home/lvuser/FRCUserProgram.jar' > /home/lvuser/robotCommand && chmod +x /home/lvuser/robotCommand"
+            }
+            session(remotes.roborioStandard) {
+                put from: files(jar.getArchivePath().absolutePath), into: '/home/lvuser/FRCUserProgram.jar'
+                execute ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r"
+                execute "sync"
+            }
         }
-    }
-    println 'Code successfully loaded and started'
+        println 'Code successfully loaded and started'
 //    switchBack()
+    }
 }
+//tasks.withType(JavaCompile) {
+//    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+//}
