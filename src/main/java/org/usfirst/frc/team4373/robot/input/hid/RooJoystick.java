@@ -16,6 +16,10 @@ import org.usfirst.frc.team4373.robot.input.filter.DoubleTypeFilter;
  * @author Rui-Jie Fang
  */
 public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
+    public enum Axis {
+        X, Y, Z, TWIST, THROTTLE
+    }
+
     private static final double DEADZONE = 0.09;
     private F filter = null;
 
@@ -64,12 +68,36 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
     }
 
     /**
-     * Returns the filtered value of a joystick access.
+     * Returns the filtered value of a joystick axis.
      *
-     * @param axis the axis to read from
-     * @return the filtered value of the axis
+     * @param axis the axis from which to read.
+     * @return the filtered value of the axis.
      */
-    public double getAxis(int axis) {
+    public double getAxis(Axis axis) {
+        switch (axis) {
+            case X:
+                return this.rooGetX();
+            case Y:
+                return this.rooGetY();
+            case Z:
+                return this.rooGetZ();
+            case TWIST:
+                return this.rooGetTwist();
+            case THROTTLE:
+                return this.rooGetThrottle();
+            default:
+                return 0d;
+        }
+    }
+
+    /**
+     * Returns the filtered value of a joystick axis.
+     *
+     * @param axis the axis to read from.
+     * @return the filtered value of the axis.
+     */
+    @Deprecated
+    private double getAxis(int axis) {
         switch (axis) {
             case 0:
                 return this.rooGetX();
@@ -91,8 +119,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
      * @return the joystick angle
      */
     public double getAngle() {
-        double x = this.getAxis(0); //kX
-        double y = this.getAxis(1); //kY
+        double x = this.getAxis(Axis.X);
+        double y = this.getAxis(Axis.Y);
         return Math.atan(y / x);
     }
 }
