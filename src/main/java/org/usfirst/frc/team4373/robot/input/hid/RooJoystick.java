@@ -24,8 +24,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
 
         /**
          * Creates an Axis from an AxisType.
-         * @param axis The AxisType to copy.
-         * @return A new Axis with the same 'mental image' as the AxisType.
+         * @param axis the AxisType to copy.
+         * @return a new Axis with the same 'mental image' as the AxisType.
          */
         public static Axis from(AxisType axis) {
             switch (axis) {
@@ -55,8 +55,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
 
     /**
      * Filter a value using the joystick's filter.
-     * @param val The value to filter.
-     * @return The value post-filtering.
+     * @param val the value to filter.
+     * @return the filtered value.
      */
     private double filter(double val) {
         // We don't know the return type because of type erasure...
@@ -65,8 +65,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
 
     /**
      * Ignores input if it is within the deadzone (if it is negligible).
-     * @param input The input value to be checked.
-     * @return The input value if it is large enough, or 0 if it was negligible.
+     * @param input the input value to be checked.
+     * @return the input value if it is large enough, or 0 if it was negligible.
      */
     private double applyDeadzone(double input) {
         return Math.abs(input) <= DEADZONE ? 0 : input;
@@ -95,8 +95,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
     /**
      * Returns the filtered value of a joystick axis.
      *
-     * @param axis The axis from which to read.
-     * @return The filtered value of the axis.
+     * @param axis the axis from which to read.
+     * @return the filtered value of the axis.
      */
     public double getAxis(Axis axis) {
         switch (axis) {
@@ -118,8 +118,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
     /**
      * Returns the filtered value of a joystick axis.
      *
-     * @param axis The axis to read from.
-     * @return The filtered value of the axis.
+     * @param axis the axis to read from.
+     * @return the filtered value of the axis.
      */
     @Deprecated
     private double getAxis(int axis) {
@@ -141,7 +141,7 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
 
     /**
      * Gets the angle the joystick is facing relative to neutral.
-     * @return The joystick angle.
+     * @return the joystick angle.
      */
     public double getAngle() {
         double x = this.getAxis(Axis.X);
