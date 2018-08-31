@@ -16,8 +16,33 @@ import org.usfirst.frc.team4373.robot.input.filter.DoubleTypeFilter;
  * @author Rui-Jie Fang
  */
 public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
+    /**
+     * A representation of an axis of the joystick.
+     */
     public enum Axis {
-        X, Y, Z, TWIST, THROTTLE
+        X, Y, Z, TWIST, THROTTLE;
+
+        /**
+         * Creates an Axis from an AxisType.
+         * @param axis The AxisType to copy.
+         * @return A new Axis with the same 'mental image' as the AxisType.
+         */
+        public static Axis from(AxisType axis) {
+            switch (axis) {
+                case kX:
+                    return X;
+                case kY:
+                    return Y;
+                case kZ:
+                    return Z;
+                case kTwist:
+                    return TWIST;
+                case kThrottle:
+                    return THROTTLE;
+                default:
+                    return null;
+            }
+        }
     }
 
     private static final double DEADZONE = 0.09;
@@ -70,8 +95,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
     /**
      * Returns the filtered value of a joystick axis.
      *
-     * @param axis the axis from which to read.
-     * @return the filtered value of the axis.
+     * @param axis The axis from which to read.
+     * @return The filtered value of the axis.
      */
     public double getAxis(Axis axis) {
         switch (axis) {
@@ -93,8 +118,8 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
     /**
      * Returns the filtered value of a joystick axis.
      *
-     * @param axis the axis to read from.
-     * @return the filtered value of the axis.
+     * @param axis The axis to read from.
+     * @return The filtered value of the axis.
      */
     @Deprecated
     private double getAxis(int axis) {
@@ -110,13 +135,13 @@ public class RooJoystick<F extends DoubleTypeFilter> extends Joystick {
             case 4:
                 return this.rooGetThrottle();
             default:
-                return 0.0;
+                return 0d;
         }
     }
 
     /**
      * Gets the angle the joystick is facing relative to neutral.
-     * @return the joystick angle
+     * @return The joystick angle.
      */
     public double getAngle() {
         double x = this.getAxis(Axis.X);
