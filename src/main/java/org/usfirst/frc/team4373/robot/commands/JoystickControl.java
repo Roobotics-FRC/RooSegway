@@ -95,6 +95,23 @@ public class JoystickControl extends Command {
 
         SmartDashboard.putNumber("Right Velocity", drivetrain.getRightVelocity());
         SmartDashboard.putNumber("Left Velocity", drivetrain.getLeftVelocity());
+
+        SmartDashboard.putNumber("Right 1 HEAD Pos", this.drivetrain.right1
+                .getSelectedSensorPosition(RobotMap.HEADING_PID_IDX));
+        SmartDashboard.putNumber("Right 1 HEAD Vel", this.drivetrain.right1
+                .getSelectedSensorVelocity(RobotMap.HEADING_PID_IDX));
+        SmartDashboard.putNumber("Right 1 SPD Pos", this.drivetrain.right1
+                .getSelectedSensorPosition(RobotMap.SPEED_PID_IDX));
+        SmartDashboard.putNumber("Right 1 SPD Vel", this.drivetrain.right1
+                .getSelectedSensorVelocity(RobotMap.SPEED_PID_IDX));
+        SmartDashboard.putNumber("Left 1 HEAD Pos", this.drivetrain.left1
+                .getSelectedSensorPosition(RobotMap.HEADING_PID_IDX));
+        SmartDashboard.putNumber("Left 1 HEAD Vel", this.drivetrain.left1
+                .getSelectedSensorVelocity(RobotMap.HEADING_PID_IDX));
+        SmartDashboard.putNumber("Left 1 SPD Pos", this.drivetrain.left1
+                .getSelectedSensorPosition(RobotMap.SPEED_PID_IDX));
+        SmartDashboard.putNumber("Left 1 SPD Vel", this.drivetrain.left1
+                .getSelectedSensorVelocity(RobotMap.SPEED_PID_IDX));
     }
 
     @Override

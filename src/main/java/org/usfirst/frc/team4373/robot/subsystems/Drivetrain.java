@@ -1,8 +1,10 @@
 package org.usfirst.frc.team4373.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.commands.JoystickControl;
@@ -17,10 +19,11 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
+    // TODO: Once we've dealt with PID, we can make these private & expose setpoint-setting methods
     public WPI_TalonSRX left1;
-    private WPI_TalonSRX left2;
+    public WPI_TalonSRX left2;
     public WPI_TalonSRX right1;
-    private WPI_TalonSRX right2;
+    public WPI_TalonSRX right2;
 
     private PigeonIMU leftPigeon;
 
@@ -57,65 +60,64 @@ public class Drivetrain extends Subsystem {
         this.right1.setSensorPhase(false);
 
         // Echo left to remote 0
-        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+        catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
                 RobotMap.SPEED_PID_IDX,
-                RobotMap.TALON_TIMEOUT_MS);
-        this.right1.configRemoteFeedbackFilter(this.left1.getDeviceID(),
+                RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configRemoteFeedbackFilter(this.left1.getDeviceID(),
                 RemoteSensorSource.TalonSRX_SelectedSensor,
                 RobotMap.REMOTE_SENSOR_0,
-                RobotMap.TALON_TIMEOUT_MS);
+                RobotMap.TALON_TIMEOUT_MS));
         // Set up difference
-        this.right1.configSensorTerm(SensorTerm.Diff1,
+        catchError(this.right1.configSensorTerm(SensorTerm.Diff1,
                 FeedbackDevice.RemoteSensor0,
-                RobotMap.TALON_TIMEOUT_MS);
-        this.right1.configSensorTerm(SensorTerm.Diff0,
+                RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configSensorTerm(SensorTerm.Diff0,
                 FeedbackDevice.QuadEncoder,
-                RobotMap.TALON_TIMEOUT_MS);
+                RobotMap.TALON_TIMEOUT_MS));
         // Use difference output as sensor
-        this.right1.configSelectedFeedbackSensor(FeedbackDevice.SensorDifference,
+        catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.SensorDifference,
                 RobotMap.SPEED_PID_IDX,
-                RobotMap.TALON_TIMEOUT_MS);
+                RobotMap.TALON_TIMEOUT_MS));
 
-        this.right1.configRemoteFeedbackFilter(leftPigeon.getDeviceID(),
-                RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_0);
+        catchError(this.right1.configRemoteFeedbackFilter(leftPigeon.getDeviceID(),
+                RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_0));
 
-        this.right1.configSelectedFeedbackCoefficient(1.0,
-                RobotMap.SPEED_PID_IDX, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor1,
-                RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.configSelectedFeedbackCoefficient(
+        catchError(this.right1.configSelectedFeedbackCoefficient(1.0,
+                RobotMap.SPEED_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor1,
+                RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configSelectedFeedbackCoefficient(
                 RobotMap.NATIVE_UNITS_PER_ROTATION / RobotMap.PIGEON_UNITS_PER_ROTATION,
-                RobotMap.HEADING_PID_IDX, RobotMap.HEADING_PID_IDX);
+                RobotMap.HEADING_PID_IDX, RobotMap.HEADING_PID_IDX));
 
+        catchError(this.left1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
 
-        this.left1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
-        this.left1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
-        this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS);
-        this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS);
-
-        this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS);
+        catchError(this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
 
         // Configure speed PID
-        this.right1.config_kF(RobotMap.SPEED_PID_IDX,
-                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.config_kP(RobotMap.SPEED_PID_IDX,
-                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.config_kI(RobotMap.SPEED_PID_IDX,
-                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.config_kD(RobotMap.SPEED_PID_IDX,
-                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS);
+        catchError(this.right1.config_kF(RobotMap.SPEED_PID_IDX,
+                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kP(RobotMap.SPEED_PID_IDX,
+                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kI(RobotMap.SPEED_PID_IDX,
+                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kD(RobotMap.SPEED_PID_IDX,
+                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
 
-        this.right1.config_kF(RobotMap.HEADING_PID_IDX,
-                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.config_kP(RobotMap.HEADING_PID_IDX,
-                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.config_kI(RobotMap.HEADING_PID_IDX,
-                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.config_kD(RobotMap.HEADING_PID_IDX,
-                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS);
+        catchError(this.right1.config_kF(RobotMap.HEADING_PID_IDX,
+                RobotMap.HEADING_PID.kF, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kP(RobotMap.HEADING_PID_IDX,
+                RobotMap.HEADING_PID.kP, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kI(RobotMap.HEADING_PID_IDX,
+                RobotMap.HEADING_PID.kI, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kD(RobotMap.HEADING_PID_IDX,
+                RobotMap.HEADING_PID.kD, RobotMap.TALON_TIMEOUT_MS));
 
     }
 
@@ -130,6 +132,24 @@ public class Drivetrain extends Subsystem {
         double[] arr = new double[3];
         this.leftPigeon.getYawPitchRoll(arr);
         return arr;
+    }
+
+    // -- DEBUG METHOD --
+
+    private int callIdx = 0;
+
+    /**
+     * Catches errors.
+     * @param code the ErrorCode object to catch.
+     */
+    private void catchError(ErrorCode code) {
+        if (code.value != 0) {
+            DriverStation.reportError("Call " + callIdx
+                    + " failed with error code " + code.value, true);
+        } else {
+            System.out.println("Call " + callIdx + " succeeded");
+        }
+        ++callIdx;
     }
 
     /**
