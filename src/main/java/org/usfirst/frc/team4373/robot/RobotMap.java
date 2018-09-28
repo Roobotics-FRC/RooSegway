@@ -12,11 +12,11 @@ public class RobotMap {
         public double kD;
         public double kF;
 
-        PID(double kP, double kI, double kD, double kF) {
+        PID(double kF, double kP, double kI, double kD) {
+            this.kF = kF;
             this.kP = kP;
             this.kI = kI;
             this.kD = kD;
-            this.kF = kF;
         }
     }
 
@@ -38,9 +38,7 @@ public class RobotMap {
     // PID-related costants
     public static final PID VELOCITY_PID = new PID(0, 1, 0, 0);
     // At 100% output, 503 native units = 512 sensor units
-    public static final PID HEADING_PID = new PID(0, 1, 0, 0);
     public static final int SPEED_PID_IDX = 0;
-    public static final int HEADING_PID_IDX = 1;
     public static final int TALON_TIMEOUT_MS = 1000;
 
     // Turning
