@@ -19,8 +19,8 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
 public class Drivetrain extends Subsystem {
 
     // TODO: Once we've dealt with PID, we can make these private & expose setpoint-setting methods
-    public WPI_TalonSRX right1;
-    public WPI_TalonSRX right2;
+    private WPI_TalonSRX right1;
+    private WPI_TalonSRX right2;
 
     private static Drivetrain instance;
 
@@ -133,12 +133,22 @@ public class Drivetrain extends Subsystem {
         return right1.getMotorOutputPercent();
     }
 
+    // -- DEBUG METHOD --
+
+    /**
+     * Gets percent output of secondary right motor.
+     * @return percent output of secondary right motor.
+     */
+    public double getRight2PercentOutput() {
+        return right2.getMotorOutputPercent();
+    }
+
     /**
      * Gets the position of the right wheels in units.
      * @return The position of the right wheels, in 'units'.
      */
     public int getRightPosition() {
-        return right1.getSelectedSensorPosition(0);
+        return right1.getSelectedSensorPosition(RobotMap.SPEED_PID_IDX);
     }
 
     /**
@@ -146,7 +156,7 @@ public class Drivetrain extends Subsystem {
      * @return The velocity of the right wheels, in 'units'/0.1s.
      */
     public int getRightVelocity() {
-        return right1.getSelectedSensorVelocity(0);
+        return right1.getSelectedSensorVelocity(RobotMap.SPEED_PID_IDX);
     }
 
     public double getRightClosedLoopError() {

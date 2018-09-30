@@ -35,8 +35,6 @@ public class JoystickControl extends Command {
         double y = OI.getOI().getDriveJoystick().rooGetY();
         double z = OI.getOI().getDriveJoystick().rooGetZ();
 
-        SmartDashboard.putNumber("Speed Value",
-                this.drivetrain.right1.getSelectedSensorVelocity(RobotMap.SPEED_PID_IDX));
         if (OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
             /*
              * 4096 (Units/Rev) * 5300 (RPM) * 1:24 (gearbox ratio) / 600 (unit of 100ms/min)
@@ -47,7 +45,7 @@ public class JoystickControl extends Command {
 
             double targetHeading = y * RobotMap.NATIVE_UNITS_PER_ROTATION;
 
-            this.drivetrain.right1.set(ControlMode.Velocity, targetVelocityPer100ms);
+            this.drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
 
             /* append more signals to print when in speed mode. */
             sb.append("\t\tout:").append(drivetrain.getRightPercentOutput());
@@ -57,7 +55,7 @@ public class JoystickControl extends Command {
         } else {
             // FIXME: always returns 0
             // Percent output—fall back on manual
-            double curRight = drivetrain.getRight();
+            double curRight = drivetrain.getRightPercentOutput();
 
             double newRight = y + z;
 
@@ -80,12 +78,10 @@ public class JoystickControl extends Command {
 
         SmartDashboard.putNumber("Right Velocity", drivetrain.getRightVelocity());
 
-        SmartDashboard.putNumber("Right 1 SPD Pos", this.drivetrain.right1
-                .getSelectedSensorPosition(RobotMap.SPEED_PID_IDX));
-        SmartDashboard.putNumber("Right 1 SPD Vel", this.drivetrain.right1
-                .getSelectedSensorVelocity(RobotMap.SPEED_PID_IDX));
-        SmartDashboard.putNumber("Right 1 Power", this.drivetrain.right1.get());
-        SmartDashboard.putNumber("Right 2 Power", this.drivetrain.right2.get());
+        SmartDashboard.putNumber("Right 1 SPD Pos", this.drivetrain.getRightPosition());
+        SmartDashboard.putNumber("Right 1 SPD Vel", this.drivetrain.getRightVelocity());
+        SmartDashboard.putNumber("Right 1 Power", this.drivetrain.getRightPercentOutput());
+        SmartDashboard.putNumber("Right 2 Power", this.drivetrain.getRight2PercentOutput());
     }
 
     @Override
