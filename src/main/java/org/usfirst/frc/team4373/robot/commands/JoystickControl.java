@@ -36,38 +36,33 @@ public class JoystickControl extends Command {
         double z = OI.getOI().getDriveJoystick().rooGetZ();
 
         if (OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
-            /*
-             * 4096 (Units/Rev) * 5300 (RPM) * 1:24 (gearbox ratio) / 600 (unit of 100ms/min)
-             * in each direction
-             * velocity setpoint is in units/100ms */
-            // 1500 RPM in either direction
-            double targetVelocityPer100ms = y * 4096 * 5300 / 24 / 600;
 
-            double targetHeading = y * RobotMap.NATIVE_UNITS_PER_ROTATION;
+            double targetHeading = z * RobotMap.NATIVE_UNITS_PER_ROTATION;
 
-            this.drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
+            this.drivetrain.setLeft(ControlMode.Position, targetHeading);
 
             /* append more signals to print when in speed mode. */
-            sb.append("\t\tout:").append(drivetrain.getRightPercentOutput());
-            sb.append("\t\tspd:").append(drivetrain.getRightVelocity());
-            sb.append("\t\terr:").append(drivetrain.getRightClosedLoopError());
-            sb.append("\t\ttrg:").append(targetVelocityPer100ms);
+            sb.append("\t\tout:").append(drivetrain.getLeftPercentOutput());
+            sb.append("\t\tang:").append(drivetrain.getPigeonYawPitchRoll()[0]);
+            sb.append("\t\tsns:").append(drivetrain.left1.getSelectedSensorPosition());
+            sb.append("\t\terr:").append(drivetrain.getLeftClosedLoopError());
+            sb.append("\t\ttrg:").append(targetHeading);
         } else {
             // FIXME: always returns 0
             // Percent output—fall back on manual
-            double curRight = drivetrain.getRightPercentOutput();
+            double curLeft = drivetrain.getLeftPercentOutput();
 
-            double newRight = y + z;
+            double newLeft = y + z;
 
-            double rightDiff = newRight - curRight;
+            double rightDiff = newLeft - curLeft;
             rightDiff = Math.abs(rightDiff) > 0.01 ? Math.copySign(0.01, rightDiff) : rightDiff;
 
-            System.out.println("RIGHT: cur - " + curRight + "\tdiff - " + rightDiff
-                    + "\tnew_sum - " + (curRight + rightDiff));
+            System.out.println("RIGHT: cur - " + curLeft + "\tdiff - " + rightDiff
+                    + "\tnew_sum - " + (curLeft + rightDiff));
 
             // drivetrain.setLeft(ControlMode.PercentOutput, curLeft + leftDiff);
-            // drivetrain.setRight(ControlMode.PercentOutput, curRight + rightDiff);
-            drivetrain.setRight(ControlMode.PercentOutput, 1);
+            // drivetrain.setLeft(ControlMode.PercentOutput, curLeft + rightDiff);
+            drivetrain.setLeft(ControlMode.PercentOutput, 1);
         }
 
         if (++loops >= 10) {
@@ -76,12 +71,13 @@ public class JoystickControl extends Command {
         }
         sb.setLength(0);
 
-        SmartDashboard.putNumber("Right Velocity", drivetrain.getRightVelocity());
+        SmartDashboard.putNumber("Left Velocity", drivetrain.getLeftVelocity());
 
-        SmartDashboard.putNumber("Right 1 SPD Pos", this.drivetrain.getRightPosition());
-        SmartDashboard.putNumber("Right 1 SPD Vel", this.drivetrain.getRightVelocity());
-        SmartDashboard.putNumber("Right 1 Power", this.drivetrain.getRightPercentOutput());
-        SmartDashboard.putNumber("Right 2 Power", this.drivetrain.getRight2PercentOutput());
+        SmartDashboard.putNumber("Left 1 Pos", this.drivetrain.getLeftPosition());
+        SmartDashboard.putNumber("Left 1 Vel", this.drivetrain.getLeftVelocity());
+        SmartDashboard.putNumber("Left 1 Power", this.drivetrain.getLeftPercentOutput());
+        SmartDashboard.putNumber("Left 2 Power", this.drivetrain.getLeft2PercentOutput());
+        SmartDashboard.putNumberArray("PYPR", this.drivetrain.getPigeonYawPitchRoll());
     }
 
     @Override
