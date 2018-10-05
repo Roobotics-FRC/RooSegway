@@ -18,7 +18,6 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
-    // TODO: Once we've dealt with PID, we can make these private & expose setpoint-setting methods
     private WPI_TalonSRX right1;
     private WPI_TalonSRX right2;
 
