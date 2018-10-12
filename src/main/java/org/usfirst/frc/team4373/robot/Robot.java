@@ -19,6 +19,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         Drivetrain.getInstance();
         OI.getOI().getGyro().calibrate();
+        SmartDashboard.putNumber("Desired Speed (in weird units)", 0);
     }
 
     @Override

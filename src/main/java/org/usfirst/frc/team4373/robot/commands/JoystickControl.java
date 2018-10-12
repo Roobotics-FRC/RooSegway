@@ -35,7 +35,7 @@ public class JoystickControl extends Command {
         double y = OI.getOI().getDriveJoystick().rooGetY();
         double z = OI.getOI().getDriveJoystick().rooGetZ();
 
-        if (OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
+        if (!OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
             /*
              * 4096 (Units/Rev) * 5300 (RPM) * 1:24 (gearbox ratio) / 600 (unit of 100ms/min)
              * in each direction
@@ -45,7 +45,9 @@ public class JoystickControl extends Command {
 
             double targetHeading = y * RobotMap.NATIVE_UNITS_PER_ROTATION;
 
-            this.drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
+            // this.drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
+            this.drivetrain.setRight(ControlMode.Velocity,
+                    SmartDashboard.getNumber("Desired Speed (in weird units)", 0));
 
             /* append more signals to print when in speed mode. */
             sb.append("\t\tout:").append(drivetrain.getRightPercentOutput());
