@@ -50,6 +50,9 @@ public class Drivetrain extends Subsystem {
                 RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_0));
         catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0,
                 RobotMap.SPEED_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.configSelectedFeedbackCoefficient(360
+                        / RobotMap.PIGEON_UNITS_PER_ROTATION, RobotMap.SPEED_PID_IDX,
+                RobotMap.TALON_TIMEOUT_MS));
         this.left1.setSensorPhase(false);
 
         catchError(this.left1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
