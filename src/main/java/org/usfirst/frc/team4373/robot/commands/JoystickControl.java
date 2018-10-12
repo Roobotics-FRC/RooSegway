@@ -27,7 +27,7 @@ public class JoystickControl extends Command {
 
     @Override
     public void initialize() {
-
+        drivetrain.resetPigeon();
     }
 
     @Override
@@ -35,9 +35,10 @@ public class JoystickControl extends Command {
         double y = OI.getOI().getDriveJoystick().rooGetY();
         double z = OI.getOI().getDriveJoystick().rooGetZ();
 
-        if (OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
+        if (!OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
 
-            double targetHeading = z * RobotMap.NATIVE_UNITS_PER_ROTATION;
+            double targetHeading = SmartDashboard.getNumber("Desired Heading", 0)
+                    * RobotMap.PIGEON_UNITS_PER_ROTATION;
 
             this.drivetrain.setLeft(ControlMode.Position, targetHeading);
 
@@ -72,12 +73,13 @@ public class JoystickControl extends Command {
         sb.setLength(0);
 
         SmartDashboard.putNumber("Left Velocity", drivetrain.getLeftVelocity());
+        SmartDashboard.putNumber("ANG Sensor Units", drivetrain.left1.getSelectedSensorPosition());
 
         SmartDashboard.putNumber("Left 1 Pos", this.drivetrain.getLeftPosition());
         SmartDashboard.putNumber("Left 1 Vel", this.drivetrain.getLeftVelocity());
         SmartDashboard.putNumber("Left 1 Power", this.drivetrain.getLeftPercentOutput());
         SmartDashboard.putNumber("Left 2 Power", this.drivetrain.getLeft2PercentOutput());
-        SmartDashboard.putNumberArray("PYPR", this.drivetrain.getPigeonYawPitchRoll());
+        SmartDashboard.putNumber("PYaw", this.drivetrain.getPigeonYawPitchRoll()[0]);
     }
 
     @Override

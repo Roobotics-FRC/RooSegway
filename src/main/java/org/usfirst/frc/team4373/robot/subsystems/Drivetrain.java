@@ -88,6 +88,13 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
+     * Resets the pigeon so that the current heading is 0°.
+     */
+    public void resetPigeon() {
+        leftPigeon.setYaw(0 * 64);
+    }
+
+    /**
      * Gets the yaw, pitch, and roll from the Pigeon.
      * @return a three-element array containing in indices 0, 1, and 2 the current
     yaw, pitch, and roll, respectively.

@@ -19,6 +19,8 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         Drivetrain.getInstance();
         OI.getOI().getGyro().calibrate();
+        // SmartDashboard
+        SmartDashboard.putNumber("Desired Heading", 0);
     }
 
     @Override

@@ -45,7 +45,7 @@ public class RobotMap {
     // If these are wrong, blame these people: https://github.com/CrossTheRoadElec/
     // Phoenix-Examples-Languages/blob/a27402ea24c4791c4a38915e07a8155232ab566d/Java/
     // RemoteClosedLoop/src/org/usfirst/frc/team4130/robot/Constants.java
-    public static final double NATIVE_UNITS_PER_ROTATION = 360; // they said 3600 but I disagree
+    public static final double NATIVE_UNITS_PER_ROTATION = 3600; // they said 3600 but I disagree
     public static final double PIGEON_UNITS_PER_ROTATION = 8192;
 
 }
