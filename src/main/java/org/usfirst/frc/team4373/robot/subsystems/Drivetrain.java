@@ -59,6 +59,8 @@ public class Drivetrain extends Subsystem {
         catchError(this.left1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.configAllowableClosedloopError(RobotMap.SPEED_PID_IDX,
+                RobotMap.ALLOWABLE_ANGLE_ERROR, RobotMap.TALON_TIMEOUT_MS));
 
         // Configure speed PID
         catchError(this.left1.config_kF(RobotMap.SPEED_PID_IDX,

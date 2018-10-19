@@ -36,10 +36,11 @@ public class RobotMap {
     public static final int RIGHT_DRIVE_MOTOR_REAR = 9; // Dummy
 
     // PID-related costants
-    public static final PID VELOCITY_PID = new PID(0, 1, 0, 0);
+    public static final PID VELOCITY_PID = new PID(0, 10, 0, 0);
     // At 100% output, 503 native units = 512 sensor units
     public static final int SPEED_PID_IDX = 0;
     public static final int TALON_TIMEOUT_MS = 1000;
+    public static final int ALLOWABLE_ANGLE_ERROR = 0;
 
     // Turning
     // If these are wrong, blame these people: https://github.com/CrossTheRoadElec/
