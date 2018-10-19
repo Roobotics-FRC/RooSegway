@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4373.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4373.robot.OI;
@@ -44,8 +46,9 @@ public class JoystickControl extends Command {
             double targetVelocityPer100ms = y * 4096 * 5300 / 24 / 600;
 
             // this.drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
-            this.drivetrain.setRight(ControlMode.Velocity,
+            this.drivetrain.right1.set(ControlMode.Velocity,
                     SmartDashboard.getNumber("% of Full Speed", 0) * 4096 * 5300 / 24 / 600);
+            this.drivetrain.left1.follow(this.drivetrain.right1, FollowerType.AuxOutput1);
 
             /* append more signals to print when in speed mode. */
             sb.append("\t\tout:").append(drivetrain.getRightPercentOutput());

@@ -18,8 +18,10 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
-    private WPI_TalonSRX right1;
+    public WPI_TalonSRX right1;
     private WPI_TalonSRX right2;
+    public WPI_TalonSRX left1;
+    private WPI_TalonSRX left2;
 
     private static Drivetrain instance;
 
@@ -30,26 +32,49 @@ public class Drivetrain extends Subsystem {
     private Drivetrain() {
         this.right1 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_FRONT);
         this.right2 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_REAR);
+        this.left1 = new WPI_TalonSRX(RobotMap.LEFT_DRIVE_MOTOR_FRONT);
+        this.left2 = new WPI_TalonSRX(RobotMap.LEFT_DRIVE_MOTOR_REAR);
 
         // Make sure that the wheels stay still if they are set to 0
         this.right1.setNeutralMode(NeutralMode.Brake);
         this.right2.setNeutralMode(NeutralMode.Brake);
+        this.left1.setNeutralMode(NeutralMode.Brake);
+        this.left2.setNeutralMode(NeutralMode.Brake);
 
         // Invert all motors
         this.right1.setInverted(true);
         this.right2.setInverted(true);
+        this.left1.setInverted(false);
+        this.left2.setInverted(false);
 
         // Enable follower mode—motors 1 are master
         this.right2.follow(this.right1);
+        this.left2.follow(this.left1);
 
-        catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+        catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
                 RobotMap.SPEED_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
-        this.right1.setSensorPhase(false);
+        this.left1.setSensorPhase(false);
+
+        catchError(this.right1.configRemoteFeedbackFilter(this.left1.getDeviceID(),
+                RemoteSensorSource.TalonSRX_SelectedSensor,
+                RobotMap.REMOTE_SENSOR_0, RobotMap.TALON_TIMEOUT_MS));
+
+        catchError(this.right1.configSensorTerm(SensorTerm.Sum0, FeedbackDevice.RemoteSensor0,
+                RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configSensorTerm(SensorTerm.Sum1, FeedbackDevice.QuadEncoder,
+                RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configSelectedFeedbackCoefficient(0.5, RobotMap.SPEED_PID_IDX,
+                RobotMap.TALON_TIMEOUT_MS));
 
         catchError(this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
+
+        catchError(this.left1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
 
         // Configure speed PID
         catchError(this.right1.config_kF(RobotMap.SPEED_PID_IDX,
