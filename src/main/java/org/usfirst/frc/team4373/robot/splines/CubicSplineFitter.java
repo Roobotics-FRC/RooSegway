@@ -8,10 +8,9 @@ public class CubicSplineFitter {
     private int n;
     private CubicSplineInterval[] curve;
 
-    public CubicSplineFitter(double[] x, double[] a) throws InvalidArgumentException {
+    public CubicSplineFitter(double[] x, double[] a) throws IllegalArgumentException {
         if (x.length != a.length)
-            throw new InvalidArgumentException(
-                    new String[]{"Error: Mismatch of domain and range"});
+            throw new IllegalArgumentException();
         this.x = x;
         this.a = a;
         this.n = x.length - 1;
@@ -21,7 +20,7 @@ public class CubicSplineFitter {
         }
     }
 
-    void interpolate() {
+    public void interpolate() {
         double[] h = new double[n + 1], alpha = new double[n + 1],
                 l = new double[n + 1], mu = new double[n + 1], z = new double[n + 1];
         h[0] = x[1] - x[0];

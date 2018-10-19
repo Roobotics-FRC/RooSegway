@@ -51,7 +51,7 @@ public class MotionProfileCollector {
         return interpolator.getCurve();
     }
 
-    public CubicSplineInterval[] fitRotations() {
+    public CubicSplineInterval[] fitRotations() throws IllegalArgumentException {
         double[] x = new double[this.record.size()], a = new double[this.record.size()];
         for(int i = 0; i < x.length ; ++i) {
             x[i] = this.record.get(i).timeMS;
