@@ -38,7 +38,7 @@ public class JoystickControl extends Command {
         if (!OI.getOI().getDriveJoystick().getRawButton(1)) { // Speed mode
 
             double targetHeading = SmartDashboard.getNumber("Desired Heading", 0)
-                    * RobotMap.PIGEON_UNITS_PER_ROTATION;
+                    / 360 * RobotMap.PIGEON_UNITS_PER_ROTATION;
 
             this.drivetrain.setLeft(ControlMode.Position, targetHeading);
 
