@@ -43,11 +43,9 @@ public class JoystickControl extends Command {
             // 1500 RPM in either direction
             double targetVelocityPer100ms = y * 4096 * 5300 / 24 / 600;
 
-            double targetHeading = y * RobotMap.NATIVE_UNITS_PER_ROTATION;
-
             // this.drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
             this.drivetrain.setRight(ControlMode.Velocity,
-                    SmartDashboard.getNumber("Desired Speed (in weird units)", 0));
+                    SmartDashboard.getNumber("% of Full Speed", 0) * 4096 * 5300 / 24 / 600);
 
             /* append more signals to print when in speed mode. */
             sb.append("\t\tout:").append(drivetrain.getRightPercentOutput());
