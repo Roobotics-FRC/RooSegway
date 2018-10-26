@@ -58,13 +58,13 @@ public class JoystickControl extends Command {
             this.drivetrain.left1.follow(this.drivetrain.right1, FollowerType.AuxOutput1);
 
             /* append more signals to print when in speed mode. */
-            sb.append("\t\tout:").append(drivetrain.getRightPercentOutput());
+            sb.append("\t\tout:").append(drivetrain.getRight1PercentOutput());
             sb.append("\t\tspd:").append(drivetrain.getRightVelocity());
             sb.append("\t\terr:").append(drivetrain.getRightClosedLoopError());
         } else {
             // FIXME: always returns 0
             // Percent output—fall back on manual
-            double curRight = drivetrain.getRightPercentOutput();
+            double curRight = drivetrain.getRight1PercentOutput();
 
             double newRight = y + z;
 
@@ -91,8 +91,10 @@ public class JoystickControl extends Command {
 
         SmartDashboard.putNumber("Right 1 SPD Pos", this.drivetrain.getRightPosition());
         SmartDashboard.putNumber("Right 1 SPD Vel", this.drivetrain.getRightVelocity());
-        SmartDashboard.putNumber("Right 1 Power", this.drivetrain.getRightPercentOutput());
+        SmartDashboard.putNumber("Right 1 Power", this.drivetrain.getRight1PercentOutput());
         SmartDashboard.putNumber("Right 2 Power", this.drivetrain.getRight2PercentOutput());
+        SmartDashboard.putNumber("Left 1 Power", this.drivetrain.getLeft1PercentOutput());
+        SmartDashboard.putNumber("Left 2 Power", this.drivetrain.getLeft2PercentOutput());
     }
 
     @Override

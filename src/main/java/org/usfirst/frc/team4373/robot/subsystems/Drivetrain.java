@@ -181,14 +181,12 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
-     * Gets the percentage of current right motor output.
-     * @return current right motor output percentage.
+     * Gets the percentage of primary right motor output.
+     * @return primary right motor output percentage.
      */
-    public double getRightPercentOutput() {
+    public double getRight1PercentOutput() {
         return right1.getMotorOutputPercent();
     }
-
-    // -- DEBUG METHOD --
 
     /**
      * Gets percent output of secondary right motor.
@@ -196,6 +194,22 @@ public class Drivetrain extends Subsystem {
      */
     public double getRight2PercentOutput() {
         return right2.getMotorOutputPercent();
+    }
+
+    /**
+     * Gets the percentage of primary right motor output.
+     * @return primary right motor output percentage.
+     */
+    public double getLeft1PercentOutput() {
+        return left1.getMotorOutputPercent();
+    }
+
+    /**
+     * Gets percent output of secondary left motor.
+     * @return percent output of secondary left motor.
+     */
+    public double getLeft2PercentOutput() {
+        return left2.getMotorOutputPercent();
     }
 
     /**
