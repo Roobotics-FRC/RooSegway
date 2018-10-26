@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4373.robot.splines;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.StringTokenizer;
 
 // spline curve of format:
 // S(x):= aj + bj(x-xj) + cj(x-xj)^2 + dj(x-xj)^3
@@ -106,6 +108,30 @@ public class CubicSplineInterval implements Serializable {
     public String toString() {
         return String.format("%d;%f;%f;%f;%f;%f;%f\n",
                 this.j, this.a_j, this.b_j, this.c_j, this.d_j, this.xl, this.xr);
+    }
+
+    private void parse(String s) throws ParseException {
+        StringTokenizer tokenizer = new StringTokenizer(s.trim(), ";");
+        try {
+            this.j = Integer.parseInt(tokenizer.nextToken());
+            this.a_j = Double.parseDouble(tokenizer.nextToken());
+            this.b_j = Double.parseDouble(tokenizer.nextToken());
+            this.c_j = Double.parseDouble(tokenizer.nextToken());
+            this.d_j = Double.parseDouble(tokenizer.nextToken());
+            this.xl = Double.parseDouble(tokenizer.nextToken());
+            this.xr = Double.parseDouble(tokenizer.nextToken());
+        } catch (Exception ignored) {
+            throw new ParseException("Parse error", 0);
+        }
+
+    }
+
+    public CubicSplineInterval(String description) throws IllegalArgumentException {
+        try {
+            parse(description);
+        } catch (ParseException parseException) {
+            throw new IllegalArgumentException(parseException.getMessage());
+        }
     }
 
     private double eval(double x) {
