@@ -20,6 +20,7 @@ public class Robot extends IterativeRobot {
         Drivetrain.getInstance();
         OI.getOI().getGyro().calibrate();
         SmartDashboard.putNumber("% of Full Speed", 0);
+        SmartDashboard.putNumber("Target Angle", 0);
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.usfirst.frc.team4373.robot.subsystems;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
@@ -23,6 +24,8 @@ public class Drivetrain extends Subsystem {
     public WPI_TalonSRX left1;
     private WPI_TalonSRX left2;
 
+    private PigeonIMU pigeon;
+
     private static Drivetrain instance;
 
     public static Drivetrain getInstance() {
@@ -34,6 +37,7 @@ public class Drivetrain extends Subsystem {
         this.right2 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_REAR);
         this.left1 = new WPI_TalonSRX(RobotMap.LEFT_DRIVE_MOTOR_FRONT);
         this.left2 = new WPI_TalonSRX(RobotMap.LEFT_DRIVE_MOTOR_REAR);
+        this.pigeon = new PigeonIMU(this.left2);
 
         // Make sure that the wheels stay still if they are set to 0
         this.right1.setNeutralMode(NeutralMode.Brake);
@@ -51,19 +55,27 @@ public class Drivetrain extends Subsystem {
         this.right2.follow(this.right1);
         this.left2.follow(this.left1);
 
+        // Set up quad encoder on left -> Remote Sensor 0
         catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                RobotMap.SPEED_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+                RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
         this.left1.setSensorPhase(false);
-
         catchError(this.right1.configRemoteFeedbackFilter(this.left1.getDeviceID(),
                 RemoteSensorSource.TalonSRX_SelectedSensor,
                 RobotMap.REMOTE_SENSOR_0, RobotMap.TALON_TIMEOUT_MS));
 
+        // Set up pigeon on Remote Sensor 1
+        catchError(this.right1.configRemoteFeedbackFilter(this.pigeon.getDeviceID(),
+                RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_1,
+                RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor1,
+                RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+
+        // Config averaging from remote sensor and quad encoder on right
         catchError(this.right1.configSensorTerm(SensorTerm.Sum0, FeedbackDevice.RemoteSensor0,
                 RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.configSensorTerm(SensorTerm.Sum1, FeedbackDevice.QuadEncoder,
                 RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.configSelectedFeedbackCoefficient(0.5, RobotMap.SPEED_PID_IDX,
+        catchError(this.right1.configSelectedFeedbackCoefficient(0.5, RobotMap.VELOCITY_PID_IDX,
                 RobotMap.TALON_TIMEOUT_MS));
 
         catchError(this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
@@ -77,13 +89,21 @@ public class Drivetrain extends Subsystem {
         catchError(this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
 
         // Configure speed PID
-        catchError(this.right1.config_kF(RobotMap.SPEED_PID_IDX,
+        catchError(this.right1.config_kF(RobotMap.VELOCITY_PID_IDX,
                 RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kP(RobotMap.SPEED_PID_IDX,
+        catchError(this.right1.config_kP(RobotMap.VELOCITY_PID_IDX,
                 RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kI(RobotMap.SPEED_PID_IDX,
+        catchError(this.right1.config_kI(RobotMap.VELOCITY_PID_IDX,
                 RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kD(RobotMap.SPEED_PID_IDX,
+        catchError(this.right1.config_kD(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kF(RobotMap.HEADING_PID_IDX,
+                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kP(RobotMap.HEADING_PID_IDX,
+                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kI(RobotMap.HEADING_PID_IDX,
+                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kD(RobotMap.HEADING_PID_IDX,
                 RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
 
     }
@@ -104,6 +124,17 @@ public class Drivetrain extends Subsystem {
             System.out.println("Call " + callIdx + " succeeded");
         }
         ++callIdx;
+    }
+
+    /**
+     * Gets the yaw, pitch, and roll from the Pigeon.
+     * @return a three-element array containing in indices 0, 1, and 2 the current
+    yaw, pitch, and roll, respectively.
+     */
+    public double[] getPigeonYawPitchRoll() {
+        double[] arr = new double[3];
+        this.pigeon.getYawPitchRoll(arr);
+        return arr;
     }
 
     /**
@@ -172,7 +203,7 @@ public class Drivetrain extends Subsystem {
      * @return The position of the right wheels, in 'units'.
      */
     public int getRightPosition() {
-        return right1.getSelectedSensorPosition(RobotMap.SPEED_PID_IDX);
+        return right1.getSelectedSensorPosition(RobotMap.VELOCITY_PID_IDX);
     }
 
     /**
@@ -180,11 +211,11 @@ public class Drivetrain extends Subsystem {
      * @return The velocity of the right wheels, in 'units'/0.1s.
      */
     public int getRightVelocity() {
-        return right1.getSelectedSensorVelocity(RobotMap.SPEED_PID_IDX);
+        return right1.getSelectedSensorVelocity(RobotMap.VELOCITY_PID_IDX);
     }
 
     public double getRightClosedLoopError() {
-        return right1.getClosedLoopError(RobotMap.SPEED_PID_IDX);
+        return right1.getClosedLoopError(RobotMap.VELOCITY_PID_IDX);
     }
 
     @Override

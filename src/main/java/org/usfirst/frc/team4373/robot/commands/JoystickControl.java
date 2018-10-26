@@ -43,18 +43,24 @@ public class JoystickControl extends Command {
              * in each direction
              * velocity setpoint is in units/100ms */
             // 1500 RPM in either direction
-            double targetVelocityPer100ms = y * 4096 * 5300 / 24 / 600;
+            // double targetVelocityPer100ms = y * 4096 * 5300 / 24 / 600;
+            double targetVelocityNative = SmartDashboard.getNumber("% of Full Speed", 0)
+                    * 4096 * 5300 / 24 / 600;
+            double targetAngleNative = SmartDashboard.getNumber("Target Angle", 0) / 360
+                    * RobotMap.PIGEON_UNITS_PER_ROTATION;
+
 
             // this.drivetrain.setRight(ControlMode.Velocity, targetVelocityPer100ms);
             this.drivetrain.right1.set(ControlMode.Velocity,
-                    SmartDashboard.getNumber("% of Full Speed", 0) * 4096 * 5300 / 24 / 600);
+                    targetVelocityNative,
+                    DemandType.AuxPID,
+                    targetAngleNative);
             this.drivetrain.left1.follow(this.drivetrain.right1, FollowerType.AuxOutput1);
 
             /* append more signals to print when in speed mode. */
             sb.append("\t\tout:").append(drivetrain.getRightPercentOutput());
             sb.append("\t\tspd:").append(drivetrain.getRightVelocity());
             sb.append("\t\terr:").append(drivetrain.getRightClosedLoopError());
-            sb.append("\t\ttrg:").append(targetVelocityPer100ms);
         } else {
             // FIXME: always returns 0
             // Percent output—fall back on manual
@@ -79,6 +85,8 @@ public class JoystickControl extends Command {
         }
         sb.setLength(0);
 
+        SmartDashboard.putNumber("ANG Sensor Units", drivetrain.left1.getSelectedSensorPosition());
+        SmartDashboard.putNumber("PYaw", this.drivetrain.getPigeonYawPitchRoll()[0]);
         SmartDashboard.putNumber("Right Velocity", drivetrain.getRightVelocity());
 
         SmartDashboard.putNumber("Right 1 SPD Pos", this.drivetrain.getRightPosition());
