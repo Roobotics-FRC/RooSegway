@@ -24,8 +24,6 @@ public class RobotMap {
     public static final int DRIVE_JOYSTICK_PORT = 0;
     public static final int OPERATOR_JOYSTICK_PORT = 1;
     public static final int GYRO_CHANNEL = 0;
-    public static final int LEFT_PIGEON_NO = 3; // Dummy
-    public static final int RIGHT_PIGEON_NO = 5; // Dummy
     public static final int REMOTE_SENSOR_0 = 0;
     public static final int REMOTE_SENSOR_1 = 1;
 

@@ -7,9 +7,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
-import org.usfirst.frc.team4373.robot.commands.JoystickControl;
-
-import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
+import org.usfirst.frc.team4373.robot.commands.SetpointFeeder;
 
 /**
  * Programmatic representation of physical drivetrain components. Implements TalonSRX-based PID.
@@ -19,12 +17,18 @@ import static org.usfirst.frc.team4373.robot.input.hid.Motors.safetyCheckSpeed;
  */
 public class Drivetrain extends Subsystem {
 
-    public WPI_TalonSRX right1;
+    public enum MotorID {
+        RIGHT_1, RIGHT_2, LEFT_1, LEFT_2
+    }
+
+    private WPI_TalonSRX right1;
     private WPI_TalonSRX right2;
-    public WPI_TalonSRX left1;
+    private WPI_TalonSRX left1;
     private WPI_TalonSRX left2;
 
     private PigeonIMU pigeon;
+
+    private int callIdx = 0; // used for ErrorCode catching
 
     private static Drivetrain instance;
 
@@ -97,20 +101,144 @@ public class Drivetrain extends Subsystem {
                 RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.config_kD(RobotMap.VELOCITY_PID_IDX,
                 RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
+
+        // Configure heading PID
         catchError(this.right1.config_kF(RobotMap.HEADING_PID_IDX,
-                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS));
+                RobotMap.HEADING_PID.kF, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.config_kP(RobotMap.HEADING_PID_IDX,
-                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS));
+                RobotMap.HEADING_PID.kP, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.config_kI(RobotMap.HEADING_PID_IDX,
-                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
+                RobotMap.HEADING_PID.kI, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.config_kD(RobotMap.HEADING_PID_IDX,
-                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
+                RobotMap.HEADING_PID.kD, RobotMap.TALON_TIMEOUT_MS));
 
     }
 
-    // -- DEBUG METHOD --
+    /**
+     * Sets the setpoints of the TalonSRX PID loop to the specified native velocity and heading.
+     * @param velocity the velocity setpoint in native units.
+     * @param heading the heading setpoint in native units.
+     */
+    public void setSetpoints(double velocity, double heading) {
+        this.right1.set(ControlMode.Velocity, velocity, DemandType.AuxPID, heading);
+        this.left1.follow(this.right1, FollowerType.AuxOutput1);
+    }
 
-    private int callIdx = 0;
+    /**
+     * Sets all motor outputs to 0.
+     */
+    public void zeroMotors() {
+        this.right1.set(0);
+        this.left1.set(0);
+    }
+
+    /**
+     * Resets the pigeon so that the current heading is 0°.
+     */
+    public void resetPigeon() {
+        ErrorCode code = pigeon.setYaw(0 * 64); // n.b. setYaw() will divide all inputs by 64
+        if (code.value != 0) {
+            logJNIError("Pigeon reset", code.value);
+        }
+    }
+
+    /**
+     * Returns the yaw value from the Pigeon IMU.
+     * @return the yaw value from the Pigeon; 0 if an error occurs.
+     */
+    public double getPigeonYaw() {
+        double[] arr = new double[3];
+        ErrorCode code = pigeon.getYawPitchRoll(arr);
+        if (code.value != 0) {
+            logJNIError("Fetching Pigeon yaw value", code.value);
+        } else {
+            return arr[0];
+        }
+        return 0;
+    }
+
+    /**
+     * Gets the percent output of the specified motor.
+     * @param motor the motor whose output percent to get.
+     * @return the output percent of the selected motor; 0 if the motor does not exist.
+     */
+    public double getOutputPercent(MotorID motor) {
+        switch (motor) {
+            case RIGHT_1:
+                return right1.getMotorOutputPercent();
+            case RIGHT_2:
+                return right2.getMotorOutputPercent();
+            case LEFT_1:
+                return left1.getMotorOutputPercent();
+            case LEFT_2:
+                return left2.getMotorOutputPercent();
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * Gets the position of the sensor associated with the selected motor on the selected PID loop.
+     * @param motor the motor whose sensor to query.
+     * @param pidIdx the PID loop to be used.
+     * @return the sensor position obtained; 0 if motor is not recognized.
+     */
+    public double getSensorPosition(MotorID motor, int pidIdx) {
+        switch (motor) {
+            case RIGHT_1:
+                return right1.getSelectedSensorPosition(pidIdx);
+            case RIGHT_2:
+                return right2.getSelectedSensorPosition(pidIdx);
+            case LEFT_1:
+                return left1.getSelectedSensorPosition(pidIdx);
+            case LEFT_2:
+                return left2.getSelectedSensorPosition(pidIdx);
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * Gets the velocity of the sensor associated with the selected motor on the selected PID loop.
+     * @param motor the motor whose sensor to query.
+     * @param pidIdx the PID loop to be used.
+     * @return the sensor velocity obtained; 0 if motor is not recognized.
+     */
+    public double getSensorVelocity(MotorID motor, int pidIdx) {
+        switch (motor) {
+            case RIGHT_1:
+                return right1.getSelectedSensorVelocity(pidIdx);
+            case RIGHT_2:
+                return right2.getSelectedSensorVelocity(pidIdx);
+            case LEFT_1:
+                return left1.getSelectedSensorVelocity(pidIdx);
+            case LEFT_2:
+                return left2.getSelectedSensorVelocity(pidIdx);
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * Gets the closed loop error for the selected motor on the selected PID loop.
+     * @param motor the motor whose sensor to query.
+     * @param pidIdx the PID loop to be used.
+     * @return the error value obtained; 0 if motor is not recognized.
+     */
+    public double getClosedLoopError(MotorID motor, int pidIdx) {
+        switch (motor) {
+            case RIGHT_1:
+                return right1.getClosedLoopError(pidIdx);
+            case RIGHT_2:
+                return right2.getClosedLoopError(pidIdx);
+            case LEFT_1:
+                return left1.getClosedLoopError(pidIdx);
+            case LEFT_2:
+                return left2.getClosedLoopError(pidIdx);
+            default:
+                return 0;
+        }
+    }
 
     /**
      * Catches errors.
@@ -118,8 +246,7 @@ public class Drivetrain extends Subsystem {
      */
     private void catchError(ErrorCode code) {
         if (code.value != 0) {
-            DriverStation.reportError("Call " + callIdx
-                    + " failed with error code " + code.value, true);
+            logJNIError("Call " + callIdx, code.value);
         } else {
             System.out.println("Call " + callIdx + " succeeded");
         }
@@ -127,113 +254,16 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
-     * Gets the yaw, pitch, and roll from the Pigeon.
-     * @return a three-element array containing in indices 0, 1, and 2 the current
-    yaw, pitch, and roll, respectively.
+     * Logs a JNI error to DriverStation.
+     * @param name the name of the call that failed.
+     * @param code the error code generated.
      */
-    public double[] getPigeonYawPitchRoll() {
-        double[] arr = new double[3];
-        this.pigeon.getYawPitchRoll(arr);
-        return arr;
-    }
-
-    /**
-     * Sets the right wheels to the specified power.
-     * As the motor is inverted, positive values will make the robot go forward.
-     *
-     * @param power The power, from -1 to 1, to which to set the motor.
-     *              This value is safety checked to make sure it is not out of this range.
-     */
-    public void setRight(double power) {
-        power = safetyCheckSpeed(power);
-        this.right1.set(power);
-    }
-
-    /**
-     * Sets the right wheels to the specified power in the specified control mode.
-     * @param controlMode the mode in which to control the motors.
-     * @param power the power (mode-specific) to supply to the motors.
-     */
-    public void setRight(ControlMode controlMode, double power) {
-        if (controlMode == ControlMode.PercentOutput) {
-            power = safetyCheckSpeed(power);
-        }
-        this.right1.set(controlMode, power);
-    }
-
-    /**
-     * Sets the wheels to the specified power.
-     * Positive values will make the robot go forward.
-     *
-     * @param power The power, from -1 to 1, to which to set the motor.
-     *              This value is safety checked to make sure it is not out of this range.
-     */
-    public void setBoth(double power) {
-        this.setRight(power);
-    }
-
-    /**
-     * Gets the right motor power.
-     * @return right motor power on scale from -1 to 1.
-     */
-    public double getRight() {
-        return right1.get();
-    }
-
-    /**
-     * Gets the percentage of primary right motor output.
-     * @return primary right motor output percentage.
-     */
-    public double getRight1PercentOutput() {
-        return right1.getMotorOutputPercent();
-    }
-
-    /**
-     * Gets percent output of secondary right motor.
-     * @return percent output of secondary right motor.
-     */
-    public double getRight2PercentOutput() {
-        return right2.getMotorOutputPercent();
-    }
-
-    /**
-     * Gets the percentage of primary right motor output.
-     * @return primary right motor output percentage.
-     */
-    public double getLeft1PercentOutput() {
-        return left1.getMotorOutputPercent();
-    }
-
-    /**
-     * Gets percent output of secondary left motor.
-     * @return percent output of secondary left motor.
-     */
-    public double getLeft2PercentOutput() {
-        return left2.getMotorOutputPercent();
-    }
-
-    /**
-     * Gets the position of the right wheels in units.
-     * @return The position of the right wheels, in 'units'.
-     */
-    public int getRightPosition() {
-        return right1.getSelectedSensorPosition(RobotMap.VELOCITY_PID_IDX);
-    }
-
-    /**
-     * Gets the velocity of the right wheels in units/0.1s.
-     * @return The velocity of the right wheels, in 'units'/0.1s.
-     */
-    public int getRightVelocity() {
-        return right1.getSelectedSensorVelocity(RobotMap.VELOCITY_PID_IDX);
-    }
-
-    public double getRightClosedLoopError() {
-        return right1.getClosedLoopError(RobotMap.VELOCITY_PID_IDX);
+    private void logJNIError(String name, int code) {
+        DriverStation.reportError(name + " failed with error code " + code, true);
     }
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new JoystickControl());
+        setDefaultCommand(new SetpointFeeder());
     }
 }
