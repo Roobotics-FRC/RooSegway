@@ -35,8 +35,8 @@ public class SetpointFeeder extends Command {
         // 1500 RPM in either direction
         double targetVelocityNative = SmartDashboard.getNumber("% of Full Speed", 0)
                 * 4096 * 5300 / 24 / 600;
-        double targetAngleNative = SmartDashboard.getNumber("Target Angle", 0) / 360
-                * RobotMap.PIGEON_UNITS_PER_ROTATION;
+        double targetAngleNative = SmartDashboard.getNumber("Target Angle", 0)
+                / 360 * RobotMap.PIGEON_UNITS_PER_ROTATION;
 
 
         this.drivetrain.setSetpoints(targetVelocityNative, targetAngleNative);
@@ -51,14 +51,20 @@ public class SetpointFeeder extends Command {
         SmartDashboard.putNumber("Right1/Angle",
                 drivetrain.getSensorPosition(Drivetrain.MotorID.RIGHT_1,
                         RobotMap.HEADING_PID_IDX));
-        SmartDashboard.putNumber("Right1/Power",
+        SmartDashboard.putNumber("Right1/Perc Output",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.RIGHT_1));
-        SmartDashboard.putNumber("Right2/Power",
+        SmartDashboard.putNumber("Right2/Perc Output",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.RIGHT_2));
-        SmartDashboard.putNumber("Left1/Power",
+        SmartDashboard.putNumber("Left1/Perc Output",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_1));
-        SmartDashboard.putNumber("Left2/Power",
+        SmartDashboard.putNumber("Left2/Perc Output",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_2));
+        SmartDashboard.putNumber("Right1/Vel Error",
+                this.drivetrain.getClosedLoopError(Drivetrain.MotorID.RIGHT_1,
+                        RobotMap.VELOCITY_PID_IDX));
+        SmartDashboard.putNumber("Right1/Head Error",
+                this.drivetrain.getClosedLoopError(Drivetrain.MotorID.RIGHT_1,
+                        RobotMap.HEADING_PID_IDX));
     }
 
     @Override
