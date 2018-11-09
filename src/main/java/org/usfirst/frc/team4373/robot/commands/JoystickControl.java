@@ -85,6 +85,7 @@ public class JoystickControl extends Command {
         SmartDashboard.putNumber("Right 1 SPD Vel", this.drivetrain.getRightVelocity());
         SmartDashboard.putNumber("Right 1 Power", this.drivetrain.getRightPercentOutput());
         SmartDashboard.putNumber("Right 2 Power", this.drivetrain.getRight2PercentOutput());
+        SmartDashboard.putNumber("Left 1 Power", this.drivetrain.left1.getMotorOutputPercent());
     }
 
     @Override
