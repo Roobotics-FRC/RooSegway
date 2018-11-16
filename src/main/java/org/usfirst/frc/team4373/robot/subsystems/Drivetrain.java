@@ -101,16 +101,6 @@ public class Drivetrain extends Subsystem {
         catchError(this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
 
-        // Configure speed PID gains
-        catchError(this.right1.config_kF(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kP(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kI(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kD(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
-
         // Configure heading PID gains
         catchError(this.right1.config_kF(RobotMap.HEADING_PID_IDX,
                 RobotMap.HEADING_PID.kF, RobotMap.TALON_TIMEOUT_MS));
@@ -120,6 +110,16 @@ public class Drivetrain extends Subsystem {
                 RobotMap.HEADING_PID.kI, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.config_kD(RobotMap.HEADING_PID_IDX,
                 RobotMap.HEADING_PID.kD, RobotMap.TALON_TIMEOUT_MS));
+
+        // Configure speed PID gains
+        catchError(this.right1.config_kF(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kP(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kI(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kD(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
 
         catchError(this.right1.configAuxPIDPolarity(false, RobotMap.TALON_TIMEOUT_MS));
     }
