@@ -60,7 +60,8 @@ public class Drivetrain extends Subsystem {
         this.left2.follow(this.left1);
 
         // Sensor phases
-        this.left1.setSensorPhase(true);
+        this.left1.setSensorPhase(false);
+        this.left2.setSensorPhase(true);
         this.right1.setSensorPhase(true);
 
         // Set up quad encoder on left -> Remote Sensor 0
@@ -75,6 +76,9 @@ public class Drivetrain extends Subsystem {
                 RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_1,
                 RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor1,
+                RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configSelectedFeedbackCoefficient(
+                RobotMap.RESOLUTION_UNITS_PER_ROTATION / RobotMap.PIGEON_UNITS_PER_ROTATION,
                 RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
 
         // Config averaging from remote sensor and quad encoder on right

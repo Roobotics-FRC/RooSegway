@@ -36,8 +36,7 @@ public class SetpointFeeder extends Command {
         double targetVelocityNative = SmartDashboard.getNumber("% of Full Speed", 0)
                 * 4096 * 5300 / 24 / 600;
         double targetAngleNative = SmartDashboard.getNumber("Target Angle", 0)
-                / 360 * RobotMap.PIGEON_UNITS_PER_ROTATION;
-
+                / 360 * RobotMap.RESOLUTION_UNITS_PER_ROTATION;
 
         this.drivetrain.setSetpoints(targetVelocityNative, targetAngleNative);
 
