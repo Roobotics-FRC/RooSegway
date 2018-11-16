@@ -121,7 +121,7 @@ public class Drivetrain extends Subsystem {
         catchError(this.right1.config_kD(RobotMap.HEADING_PID_IDX,
                 RobotMap.HEADING_PID.kD, RobotMap.TALON_TIMEOUT_MS));
 
-        // catchError(this.right1.configAuxPIDPolarity(false, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configAuxPIDPolarity(false, RobotMap.TALON_TIMEOUT_MS));
     }
 
     /**
