@@ -59,10 +59,13 @@ public class Drivetrain extends Subsystem {
         this.right2.follow(this.right1);
         this.left2.follow(this.left1);
 
+        // Sensor phases
+        this.left1.setSensorPhase(true);
+        this.right1.setSensorPhase(true);
+
         // Set up quad encoder on left -> Remote Sensor 0
         catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
                 RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
-        this.left1.setSensorPhase(false);
         catchError(this.right1.configRemoteFeedbackFilter(this.left1.getDeviceID(),
                 RemoteSensorSource.TalonSRX_SelectedSensor,
                 RobotMap.REMOTE_SENSOR_0, RobotMap.TALON_TIMEOUT_MS));
