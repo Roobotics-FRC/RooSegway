@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4373.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4373.robot.OI;
@@ -41,6 +42,7 @@ public class JoystickControl extends Command {
                     / 360 * RobotMap.PIGEON_UNITS_PER_ROTATION;
 
             this.drivetrain.setLeft(ControlMode.Position, targetHeading);
+            this.drivetrain.right1.follow(this.drivetrain.left1, FollowerType.AuxOutput1);
 
             /* append more signals to print when in speed mode. */
             sb.append("\t\tout:").append(drivetrain.getLeftPercentOutput());

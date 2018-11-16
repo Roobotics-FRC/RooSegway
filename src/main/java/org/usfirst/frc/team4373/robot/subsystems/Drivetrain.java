@@ -21,6 +21,8 @@ public class Drivetrain extends Subsystem {
 
     public WPI_TalonSRX left1;
     public WPI_TalonSRX left2;
+    public WPI_TalonSRX right1;
+    public WPI_TalonSRX right2;
 
     private PigeonIMU leftPigeon;
 
@@ -33,18 +35,25 @@ public class Drivetrain extends Subsystem {
     private Drivetrain() {
         this.left1 = new WPI_TalonSRX(RobotMap.LEFT_DRIVE_MOTOR_FRONT);
         this.left2 = new WPI_TalonSRX(RobotMap.LEFT_DRIVE_MOTOR_REAR);
+        this.right1 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_FRONT);
+        this.right2 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_REAR);
         this.leftPigeon = new PigeonIMU(this.left2);
 
         // Make sure that the wheels stay still if they are set to 0
         this.left1.setNeutralMode(NeutralMode.Brake);
         this.left2.setNeutralMode(NeutralMode.Brake);
+        this.right1.setNeutralMode(NeutralMode.Brake);
+        this.right2.setNeutralMode(NeutralMode.Brake);
 
         // Invert all motors
         this.left1.setInverted(true);
         this.left2.setInverted(true);
+        this.right1.setInverted(true);
+        this.right2.setInverted(true);
 
         // Enable follower mode—motors 1 are master
         this.left2.follow(this.left1);
+        this.right2.follow(this.right1);
 
         catchError(this.left1.configRemoteFeedbackFilter(leftPigeon.getDeviceID(),
                 RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_0));
@@ -56,6 +65,10 @@ public class Drivetrain extends Subsystem {
         catchError(this.left1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
 
         // Configure speed PID
         catchError(this.left1.config_kF(RobotMap.SPEED_PID_IDX,
