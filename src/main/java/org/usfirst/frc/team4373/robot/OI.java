@@ -2,7 +2,10 @@ package org.usfirst.frc.team4373.robot;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import org.usfirst.frc.team4373.robot.commands.JoystickControl;
+import org.usfirst.frc.team4373.robot.commands.SetpointFeeder;
 import org.usfirst.frc.team4373.robot.input.filter.FineGrainedPiecewiseFilter;
 import org.usfirst.frc.team4373.robot.input.hid.RooJoystick;
 
@@ -16,6 +19,7 @@ public class OI {
     private RooJoystick<FineGrainedPiecewiseFilter> driveJoystick;
     private RooJoystick operatorJoystick;
     private Gyro gyro;
+    private Button joystickControlButton;
 
     private OI() {
         this.driveJoystick =
@@ -24,6 +28,9 @@ public class OI {
                 new RooJoystick<>(RobotMap.OPERATOR_JOYSTICK_PORT,
                         new FineGrainedPiecewiseFilter());
         this.gyro = new AnalogGyro(RobotMap.GYRO_CHANNEL);
+        this.joystickControlButton = new JoystickButton(this.driveJoystick, 1);
+        this.joystickControlButton.whenPressed(new JoystickControl());
+        this.joystickControlButton.whenReleased(new SetpointFeeder());
     }
 
     /**

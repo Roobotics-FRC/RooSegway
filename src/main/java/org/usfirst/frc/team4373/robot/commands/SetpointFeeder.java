@@ -22,6 +22,7 @@ public class SetpointFeeder extends Command {
 
     @Override
     public void initialize() {
+        System.out.println("Starting SetpointFeeder");
         this.drivetrain.zeroMotors();
         this.drivetrain.resetPigeon();
     }
@@ -68,11 +69,12 @@ public class SetpointFeeder extends Command {
 
     @Override
     public void interrupted() {
-        this.drivetrain.zeroMotors();
+        this.end();
     }
 
     @Override
     public void end() {
+        System.out.println("Ending SetpointFeeder");
         this.drivetrain.zeroMotors();
     }
 
