@@ -2,8 +2,7 @@ package org.usfirst.frc.team4373.robot;
 
 import org.usfirst.frc.team4373.robot.MotionProfileCollector.MotionProfileTuple;
 
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 public class MotionProfileCollection implements
@@ -14,7 +13,45 @@ public class MotionProfileCollection implements
     public MotionProfileCollection(String motionProfileDirectory)
             throws IOException, IllegalArgumentException {
         this.keyRecordMapping = new HashMap<>();
+        File directory = new File(motionProfileDirectory);
+        if (!directory.isDirectory())
+            throw new IllegalArgumentException();
+        File[] listing = directory.listFiles();
+        if (listing == null) throw new IOException();
+        for (File motionRecordFile : listing) {
+            if (motionRecordFile.isFile()) {
+                ObjectInputStream readMotionRecord =
+                        new ObjectInputStream(new FileInputStream(motionRecordFile));
 
+                MotionProfileTuple recordTuple = null;
+                try {
+                    recordTuple = (MotionProfileTuple) readMotionRecord.readObject();
+                } catch (Exception fileException) {
+                    throw new IOException("Cannot read in file as a MotionProfileTuple object");
+                } finally {
+                    if (recordTuple == null) {
+                        throw new IOException("Read in a null MotionProfileTuple object");
+                    }
+                }
+                this.keyRecordMapping.put(motionRecordFile
+                                .getName()
+                                .trim()
+                                .split(".", 1)[0], recordTuple);
+            }
+        }
+    }
+
+    public void serializeMotionProfiles(String directoryName) throws IOException {
+        new ObjectOutputStream(new FileOutputStream(directoryName + "/test.txt"));
+        this.keyRecordMapping.forEach((key, val) -> {
+            try {
+                ObjectOutputStream out = new ObjectOutputStream(
+                        new FileOutputStream(directoryName + "/" + key + ".mpt"));
+                out.writeObject(val);
+                out.flush();
+            } catch (IOException ignored) {
+            }
+        });
     }
 
     public MotionProfileCollection(String[] names, MotionProfileTuple[] profiles)

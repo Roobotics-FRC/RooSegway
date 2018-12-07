@@ -76,11 +76,11 @@ public class MotionProfileCollector {
             out.write("\n");
         }
         out.write("; v/t fitting Below");
-        for(CubicSplineInterval intr : velocityIntervals) {
+        for (CubicSplineInterval intr : velocityIntervals) {
             out.write(intr.toString());
         }
         out.write("; rotation/t fitting below");
-        for(CubicSplineInterval intr : rotationIntervals) {
+        for (CubicSplineInterval intr : rotationIntervals) {
             out.write(intr.toString());
         }
         out.write("; end of file");
@@ -123,6 +123,19 @@ public class MotionProfileCollector {
     }
 
     /**
+     * Gets a formatted motion profile
+     * @return
+     */
+    public MotionProfileTuple getFormattedMotionProfile() {
+        return new MotionProfileTuple((MotionRecordFormat[]) this.getMotionProfileRecord().toArray(),
+                this.fitV(), this.fitRotations());
+    }
+
+    void clear() {
+        this.record.clear();
+    }
+
+    /**
      * Represents a single motion record
      */
     public class MotionRecordFormat implements Serializable {
@@ -154,10 +167,11 @@ public class MotionProfileCollector {
         }
     }
 
-    public class MotionProfileTuple {
+    public class MotionProfileTuple implements Serializable {
         public MotionRecordFormat[] motionRecords;
         public CubicSplineInterval[] vSpline;
         public CubicSplineInterval[] tSpline;
+
         public MotionProfileTuple(MotionRecordFormat[] motionRecords,
                                   CubicSplineInterval[] vSpline,
                                   CubicSplineInterval[] tSpline) {
@@ -166,5 +180,4 @@ public class MotionProfileCollector {
             this.tSpline = tSpline;
         }
     }
-
 }
