@@ -30,8 +30,8 @@ public class RobotMap {
     public static final int REMOTE_SENSOR_1 = 1;
 
     // Motor ports
-    public static final int LEFT_DRIVE_MOTOR_FRONT = 3; // Dummy
-    public static final int LEFT_DRIVE_MOTOR_REAR = 5; // Dummy
+    public static final int LEFT_DRIVE_MOTOR_FRONT = 5; // Dummy
+    public static final int LEFT_DRIVE_MOTOR_REAR = 3; // Dummy
     public static final int RIGHT_DRIVE_MOTOR_FRONT = 4; // Dummy
     public static final int RIGHT_DRIVE_MOTOR_REAR = 9; // Dummy
 
