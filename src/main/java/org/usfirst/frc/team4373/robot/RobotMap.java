@@ -28,10 +28,10 @@ public class RobotMap {
     public static final int REMOTE_SENSOR_1 = 1;
 
     // Motor ports
-    public static final int LEFT_DRIVE_MOTOR_FRONT = 5; // Dummy
-    public static final int LEFT_DRIVE_MOTOR_REAR = 3; // Dummy
-    public static final int RIGHT_DRIVE_MOTOR_FRONT = 4; // Dummy
-    public static final int RIGHT_DRIVE_MOTOR_REAR = 9; // Dummy
+    public static final int LEFT_DRIVE_MOTOR_FRONT = 3;
+    public static final int LEFT_DRIVE_MOTOR_REAR = 5;
+    public static final int RIGHT_DRIVE_MOTOR_FRONT = 4;
+    public static final int RIGHT_DRIVE_MOTOR_REAR = 9;
 
     // PID-related costants
     public static final PID VELOCITY_PID = new PID(0, 1, 0, 0);
