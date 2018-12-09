@@ -5,34 +5,29 @@ import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 public class CTRTalonTelemetry implements MotionProfileTelemetry {
 
     private Drivetrain drivetrain;
-    private TalonTelemetyPolarity polarity;
-    public enum TalonTelemetyPolarity {
-        LeftSide, RightSide
-    }
+    private Drivetrain.MotorID motorID;
+    private int pidIdx;
 
-    public CTRTalonTelemetry(TalonTelemetyPolarity pol) {
+    public CTRTalonTelemetry(Drivetrain.MotorID motorID, int pidIdx) {
         super();
         this.drivetrain = Drivetrain.getInstance();
-        this.polarity = pol;
+        this.motorID = motorID;
+        this.pidIdx = pidIdx;
     }
 
 
     @Override
     public double getCurrentVelocity() {
-        switch (polarity) {
-            case LeftSide: return this.drivetrain.getLeftVelocity();
-            case RightSide: return this.drivetrain.get
-        }
-        return this.drivetrain.getLeftVelocity();
+        return drivetrain.getSensorVelocity(motorID, pidIdx);
     }
 
     @Override
     public long getCurrentTimeMS() {
-        return 0;
+        return System.currentTimeMillis();
     }
 
     @Override
     public long getCurrentRotations() {
-        return 0;
+        return this.drivetrain.getSensorPosition(motorID, pidIdx);
     }
 }
