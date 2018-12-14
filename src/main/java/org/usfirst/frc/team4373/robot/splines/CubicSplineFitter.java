@@ -1,6 +1,4 @@
 package org.usfirst.frc.team4373.robot.splines;
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import java.util.ArrayList;
 
 public class CubicSplineFitter {
 
