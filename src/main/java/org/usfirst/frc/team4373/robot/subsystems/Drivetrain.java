@@ -7,7 +7,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
-import org.usfirst.frc.team4373.robot.commands.SetpointFeeder;
+import org.usfirst.frc.team4373.robot.commands.VelocityHeadingSetpointFeeder;
 
 /**
  * Programmatic representation of physical drivetrain components. Implements TalonSRX-based PID.
@@ -63,6 +63,9 @@ public class Drivetrain extends Subsystem {
         this.left1.setSensorPhase(false);
         this.left2.setSensorPhase(true);
         this.right1.setSensorPhase(true);
+
+        this.right1.configMotionAcceleration(2000, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configMotionCruiseVelocity(2000, RobotMap.TALON_TIMEOUT_MS);
 
         // Set up quad encoder on left -> Remote Sensor 0
         catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
@@ -274,6 +277,6 @@ public class Drivetrain extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new SetpointFeeder());
+        setDefaultCommand(new VelocityHeadingSetpointFeeder());
     }
 }

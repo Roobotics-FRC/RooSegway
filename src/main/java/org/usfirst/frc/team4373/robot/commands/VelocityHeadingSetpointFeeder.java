@@ -11,11 +11,11 @@ import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
  * @author aaplmath
  * @author Samasaur
  */
-public class SetpointFeeder extends Command {
+public class VelocityHeadingSetpointFeeder extends Command {
 
     private Drivetrain drivetrain;
 
-    public SetpointFeeder() {
+    public VelocityHeadingSetpointFeeder() {
         requires(this.drivetrain = Drivetrain.getInstance());
     }
 
