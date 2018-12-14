@@ -56,31 +56,31 @@ public class Drivetrain extends Subsystem {
 
         // Configure sensors and PID
         this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
-                RobotMap.talonTimeoutMs);
+                RobotMap.TALON_TIMEOUT_MS);
         this.left1.setSensorPhase(false);
-        this.left1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
-        this.left1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
+        this.left1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
 
         this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,
-                RobotMap.talonTimeoutMs);
+                RobotMap.TALON_TIMEOUT_MS);
         this.right1.setSensorPhase(false);
 
-        this.right1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.right2.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.left1.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.left2.configPeakOutputForward(1, RobotMap.talonTimeoutMs);
-        this.right1.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
-        this.right2.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
-        this.left1.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
-        this.left2.configPeakOutputReverse(-1, RobotMap.talonTimeoutMs);
-        this.right1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
-        this.right2.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
-        this.left1.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
-        this.left2.configNominalOutputForward(0, RobotMap.talonTimeoutMs);
-        this.right1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
-        this.right2.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
-        this.left1.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
-        this.left2.configNominalOutputReverse(0, RobotMap.talonTimeoutMs);
+        this.right1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS);
+        this.right2.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS);
+        this.left2.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS);
+        this.right2.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS);
+        this.left2.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
+        this.right2.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
+        this.left2.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS);
+        this.right1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
+        this.right2.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
+        this.left2.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS);
 
         this.rightServo = new Servo(RobotMap.RIGHT_SERVO_PORT);
         this.leftServo = new Servo(RobotMap.LEFT_SERVO_PORT);

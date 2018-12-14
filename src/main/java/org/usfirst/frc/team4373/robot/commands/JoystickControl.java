@@ -1,6 +1,5 @@
 package org.usfirst.frc.team4373.robot.commands;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4373.robot.OI;
@@ -38,8 +37,6 @@ public class JoystickControl extends Command {
         double newRight = y + z;
         double newLeft = y - z;
 
-        // TODO: All of this logic should be ditched in favor of using PID setpoints
-        // JavaDoc comments at the top of this file should be modified accordingly once changed
         double rightDiff = newRight - curRight;
         rightDiff = Math.abs(rightDiff) > 0.01 ? Math.copySign(0.01, rightDiff) : rightDiff;
         double leftDiff = newLeft - curLeft;
