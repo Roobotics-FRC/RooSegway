@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4373.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4373.robot.commands.profiles.MotionProfile;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
@@ -13,7 +14,12 @@ public class MotionProfileCommand extends Command {
 
     boolean initialized = false;
 
-    public MotionProfileCommand(MotionProfile prof, Drivetrain.MotorID motorID) {
+    /**
+     * Instantiates a new MotionProfileCommand.
+     * @param motorID the ID of the motor to use.
+     * @param prof the profile to use.
+     */
+    public MotionProfileCommand(Drivetrain.MotorID motorID, MotionProfile prof) {
         requires(this.drivetrain = Drivetrain.getInstance());
         this.motorID = motorID;
         this.feeder = new MotionProfileFeeder(this.drivetrain.getTalon(this.motorID), prof);
@@ -30,6 +36,14 @@ public class MotionProfileCommand extends Command {
                     feeder.getSetValue());
         }
         feeder.control();
+        SmartDashboard.putNumber("Left1/Power",
+                this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_1));
+        SmartDashboard.putNumber("Left2/Power",
+                this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_2));
+        SmartDashboard.putNumber("Right1/Power",
+                this.drivetrain.getOutputPercent(Drivetrain.MotorID.RIGHT_1));
+        SmartDashboard.putNumber("Right2/Power",
+                this.drivetrain.getOutputPercent(Drivetrain.MotorID.RIGHT_2));
     }
 
     @Override

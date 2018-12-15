@@ -1,8 +1,7 @@
 package org.usfirst.frc.team4373.robot.commands.profiles;
 
-public class MotionProfileSingleSource extends MotionProfile {
-    public int numPoints = 141;
-    public double[][] points = new double[][]{
+public class TestProfile implements MotionProfile {
+    private double[][] points = new double[][]{
         {0.014815, 0.296296, 50.0},
         {0.033333, 0.444444, 50.0},
         {0.059259, 0.592593, 50.0},
@@ -145,4 +144,20 @@ public class MotionProfileSingleSource extends MotionProfile {
         {22.783497, 0.0, 50.0},
         {22.783497, 0.0, 50.0}
     };
+
+    /**
+     * Gets the number of points in the profile.
+     * @return the number of points in the profile.
+     */
+    public int getNumPoints() {
+        return 141;
+    }
+
+    /**
+     * Gets the points in the profile.
+     * @return the points in the profile.
+     */
+    public double[][] getPoints() {
+        return points;
+    }
 }

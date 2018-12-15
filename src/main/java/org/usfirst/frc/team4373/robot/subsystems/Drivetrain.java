@@ -8,7 +8,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
-import org.usfirst.frc.team4373.robot.commands.VelocityHeadingSetpointFeeder;
+import org.usfirst.frc.team4373.robot.commands.MotionProfileCommand;
+import org.usfirst.frc.team4373.robot.commands.profiles.TestProfile;
 
 /**
  * Programmatic representation of physical drivetrain components. Implements TalonSRX-based PID.
@@ -321,6 +322,7 @@ public class Drivetrain extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new VelocityHeadingSetpointFeeder());
+        setDefaultCommand(new MotionProfileCommand(MotorID.RIGHT_1,
+                new TestProfile()));
     }
 }

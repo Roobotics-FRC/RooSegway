@@ -143,10 +143,6 @@ public class MotionProfileFeeder {
     }
 
     private void startFilling() {
-        startFilling(profile.points, profile.numPoints);
-    }
-
-    private void startFilling(double[][] profile, int totalCnt) {
         TrajectoryPoint point = new TrajectoryPoint();
 
         if (status.hasUnderrun) {
@@ -159,12 +155,12 @@ public class MotionProfileFeeder {
         primaryTalon.configMotionProfileTrajectoryPeriod(RobotMap.MOTION_PROFILE_BASE_TRAJ_TIMEOUT,
                 RobotMap.TALON_TIMEOUT_MS);
 
-        double finalPositionRot = profile[totalCnt - 1][0];
+        double finalPositionRot = profile.getPoints()[profile.getNumPoints() - 1][0];
 
-        for (int i = 0; i < totalCnt; ++i) {
+        for (int i = 0; i < profile.getNumPoints(); ++i) {
             double direction = forward ? +1 : -1;
-            double positionRot = profile[i][0];
-            double velocityRPM = profile[i][1];
+            double positionRot = profile.getPoints()[i][0];
+            double velocityRPM = profile.getPoints()[i][1];
             double heading = endHeading * positionRot / finalPositionRot;
             point.position = direction * positionRot * RobotMap.ENCODER_UNITS_PER_ROTATION * 2;
 
@@ -173,12 +169,12 @@ public class MotionProfileFeeder {
             point.auxiliaryPos = heading; /* scaled such that 3600 => 360 deg */
             point.profileSlotSelect0 = RobotMap.SLOT_MOTPROF;
             point.profileSlotSelect1 = RobotMap.SLOT_TURNING;
-            point.timeDur = getTrajectoryDuration((int)profile[i][2]);
+            point.timeDur = getTrajectoryDuration((int)profile.getPoints()[i][2]);
             point.zeroPos = false;
             if (i == 0) point.zeroPos = true;
 
             point.isLastPoint = false;
-            if ((i + 1) == totalCnt) point.isLastPoint = true;
+            if ((i + 1) == profile.getNumPoints()) point.isLastPoint = true;
 
             primaryTalon.pushMotionProfileTrajectory(point);
         }

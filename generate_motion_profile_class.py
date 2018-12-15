@@ -24,15 +24,28 @@ with open(sys.argv[1]) as csvFile:
 tab = '    '
 
 java_code = 'package org.usfirst.frc.team4373.robot.commands.profiles;\n\n'
-java_code += 'public class ' + sys.argv[2] + ' extends MotionProfile {\n'
-java_code += tab + 'public int numPoints = ' + str(len(matrix)) + ';\n'
-java_code += tab + 'public double[][] points = new double[][]{\n'
+java_code += 'public class ' + sys.argv[2] + ' implements MotionProfile {\n'
 
+java_code += tab + 'private double[][] points = new double[][]{\n'
 for i in range(len(matrix)):
   java_code += (tab * 2) + '{' + str(matrix[i][3]) + ', ' + str(matrix[i][4]) + ', ' + str(matrix[i][0] * 1000) + '},\n'
-
 java_code = java_code[:-2] + '\n'
-java_code += tab + '};\n'
+java_code += tab + '};\n\n'
+
+java_code += tab + '/**\n'
+java_code += tab + ' * Gets the number of points in the profile.\n'
+java_code += tab + ' * @return the number of points in the profile.\n'
+java_code += tab + ' */\n'
+java_code += tab + 'public int getNumPoints() {\n' + (tab * 2) + 'return ' + str(len(matrix)) + ';\n' + tab + '}\n\n'
+
+java_code += tab + '/**\n'
+java_code += tab + ' * Gets the points in the profile.\n'
+java_code += tab + ' * @return the points in the profile.\n'
+java_code += tab + ' */\n'
+java_code += tab + 'public double[][] getPoints() {\n'
+java_code += (tab * 2) + 'return points;\n'
+java_code += tab + '}\n'
+
 java_code += '}\n'
 
 with open('src/main/java/org/usfirst/frc/team4373/robot/commands/profiles/' + sys.argv[2] + '.java', 'w') as output_file:
