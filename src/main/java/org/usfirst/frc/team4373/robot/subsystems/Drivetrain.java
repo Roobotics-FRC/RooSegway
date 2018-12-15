@@ -139,7 +139,7 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
-     * Sets motion profile control mdoe on a primary motor using auxiliary output.
+     * Sets motion profile control mode on a primary motor using auxiliary output.
      * @param primary the primary motor (must be a "1" motor).
      * @param svmpValue the SetValueMotionProfile value to set.
      */

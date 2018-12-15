@@ -8,12 +8,15 @@ public class MotionProfileCommand extends Command {
 
     Drivetrain drivetrain;
 
+    Drivetrain.MotorID motorID;
     MotionProfileFeeder feeder;
 
     boolean initialized = false;
 
-    public MotionProfileCommand(MotionProfile feeder) {
+    public MotionProfileCommand(MotionProfile prof, Drivetrain.MotorID motorID) {
         requires(this.drivetrain = Drivetrain.getInstance());
+        this.motorID = motorID;
+        this.feeder = new MotionProfileFeeder(this.drivetrain.getTalon(this.motorID), prof);
     }
 
     @Override
@@ -23,7 +26,7 @@ public class MotionProfileCommand extends Command {
             this.feeder.start(0, true);
             initialized = true;
         } else {
-            this.drivetrain.setMotionProfileValue(Drivetrain.MotorID.RIGHT_1,
+            this.drivetrain.setMotionProfileValue(motorID,
                     feeder.getSetValue());
         }
         feeder.control();
