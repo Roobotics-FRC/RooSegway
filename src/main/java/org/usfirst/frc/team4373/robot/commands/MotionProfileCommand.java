@@ -7,17 +7,17 @@ import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
 public class MotionProfileCommand extends Command {
 
-    Drivetrain drivetrain;
+    private Drivetrain drivetrain;
 
-    Drivetrain.MotorID motorID;
-    MotionProfileFeeder feeder;
+    private Drivetrain.MotorID motorID;
+    private MotionProfileFeeder feeder;
 
-    boolean initialized = false;
+    private boolean initialized = false;
 
     /**
      * Instantiates a new MotionProfileCommand.
-     * @param motorID the ID of the motor to use.
-     * @param prof the profile to use.
+     * @param motorID the array of IDs of the motors to use.
+     * @param prof the profiles to use with the motors at the corresponding indices.
      */
     public MotionProfileCommand(Drivetrain.MotorID motorID, MotionProfile prof) {
         requires(this.drivetrain = Drivetrain.getInstance());
@@ -29,7 +29,7 @@ public class MotionProfileCommand extends Command {
     public void execute() {
         if (!initialized) {
             this.feeder.reset();
-            this.feeder.start(0, true);
+            this.feeder.start();
             initialized = true;
         } else {
             this.drivetrain.setMotionProfileValue(motorID,

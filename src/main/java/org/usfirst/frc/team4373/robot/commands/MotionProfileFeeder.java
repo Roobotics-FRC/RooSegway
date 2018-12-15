@@ -64,11 +64,11 @@ public class MotionProfileFeeder {
 
         if (loopTimeout == 0) {
             DriverStation.reportError("[Motion Profile] No Progress", false);
-        } else {
+        } else if (loopTimeout > 0) {
             --loopTimeout;
         }
 
-        if (!isMotionProfileMode(this.primaryTalon.getControlMode())) {
+        if (this.primaryTalon.getControlMode() != ControlMode.MotionProfile) {
             state = 0;
             loopTimeout = -1;
         } else {
@@ -96,7 +96,7 @@ public class MotionProfileFeeder {
                     }
                     if (status.activePointValid && status.isLast) {
                         setValue = SetValueMotionProfile.Hold;
-                        state = 0;
+                        // state = 0;
                         loopTimeout = -1;
                         completed = true;
                     }
@@ -125,13 +125,9 @@ public class MotionProfileFeeder {
 
     /**
      * Initialize the feeder.
-     * @param endHeading the end heading.
-     * @param forward whether it's forward.
      */
-    public void start(double endHeading, boolean forward) {
+    public void start() {
         start = true;
-        this.forward = forward;
-        this.endHeading = endHeading;
     }
 
     /**
@@ -158,17 +154,15 @@ public class MotionProfileFeeder {
         double finalPositionRot = profile.getPoints()[profile.getNumPoints() - 1][0];
 
         for (int i = 0; i < profile.getNumPoints(); ++i) {
-            double direction = forward ? +1 : -1;
             double positionRot = profile.getPoints()[i][0];
             double velocityRPM = profile.getPoints()[i][1];
-            double heading = endHeading * positionRot / finalPositionRot;
-            point.position = direction * positionRot * RobotMap.ENCODER_UNITS_PER_ROTATION * 2;
 
+            point.position = positionRot * RobotMap.ENCODER_UNITS_PER_ROTATION;
             // Convert to units per 100 ms
-            point.velocity = direction * velocityRPM * RobotMap.ENCODER_UNITS_PER_ROTATION / 600.0;
-            point.auxiliaryPos = heading; /* scaled such that 3600 => 360 deg */
-            point.profileSlotSelect0 = RobotMap.SLOT_MOTPROF;
-            point.profileSlotSelect1 = RobotMap.SLOT_TURNING;
+            point.velocity = velocityRPM * RobotMap.ENCODER_UNITS_PER_ROTATION / 600.0;
+            point.headingDeg = 0; /* scaled such that 3600 => 360 deg */
+            point.profileSlotSelect0 = 0;
+            point.profileSlotSelect1 = 0;
             point.timeDur = getTrajectoryDuration((int)profile.getPoints()[i][2]);
             point.zeroPos = false;
             if (i == 0) point.zeroPos = true;
@@ -188,11 +182,6 @@ public class MotionProfileFeeder {
                     + "use configMotionProfileTrajectoryPeriod instead", false);
         }
         return retVal;
-    }
-
-    private boolean isMotionProfileMode(ControlMode controlMode) {
-        return controlMode == ControlMode.MotionProfile
-                || controlMode == ControlMode.MotionProfileArc;
     }
 
     protected SetValueMotionProfile getSetValue() {

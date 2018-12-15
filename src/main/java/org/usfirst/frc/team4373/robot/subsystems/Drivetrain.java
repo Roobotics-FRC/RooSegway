@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.commands.MotionProfileCommand;
+import org.usfirst.frc.team4373.robot.commands.VelocityHeadingSetpointFeeder;
 import org.usfirst.frc.team4373.robot.commands.profiles.TestProfile;
 
 /**
@@ -147,12 +148,12 @@ public class Drivetrain extends Subsystem {
     public void setMotionProfileValue(MotorID primary, SetValueMotionProfile svmpValue) {
         switch (primary) {
             case RIGHT_1:
-                this.right1.set(ControlMode.MotionProfileArc, svmpValue.value);
-                this.left1.follow(this.right1, FollowerType.AuxOutput1);
+                this.right1.set(ControlMode.MotionProfile, svmpValue.value);
+                // this.left1.follow(this.right1, FollowerType.AuxOutput1);
                 break;
             case LEFT_1:
-                this.right1.set(ControlMode.MotionProfileArc, svmpValue.value);
-                this.left1.follow(this.right1, FollowerType.AuxOutput1);
+                this.right1.set(ControlMode.MotionProfile, svmpValue.value);
+                // this.left1.follow(this.right1, FollowerType.AuxOutput1);
                 break;
             default:
                 break;
@@ -322,7 +323,6 @@ public class Drivetrain extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new MotionProfileCommand(MotorID.RIGHT_1,
-                new TestProfile()));
+        setDefaultCommand(new VelocityHeadingSetpointFeeder());
     }
 }

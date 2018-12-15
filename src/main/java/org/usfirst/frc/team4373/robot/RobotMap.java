@@ -40,11 +40,6 @@ public class RobotMap {
     public static final int VELOCITY_PID_IDX = 0;
     public static final int HEADING_PID_IDX = 0;
     public static final int TALON_TIMEOUT_MS = 1000;
-    // Slots for profiling
-    public static final int SLOT_DISTANCE = 0;
-    public static final int SLOT_TURNING = 1;
-    public static final int SLOT_VELOCITY = 2;
-    public static final int SLOT_MOTPROF = 3;
     // Motion profile timing
     public static final int MOTION_PROFILE_BASE_TRAJ_TIMEOUT = 0;
 

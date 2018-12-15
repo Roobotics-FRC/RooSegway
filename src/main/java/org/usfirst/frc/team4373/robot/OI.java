@@ -2,9 +2,13 @@ package org.usfirst.frc.team4373.robot;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import org.usfirst.frc.team4373.robot.commands.MotionProfileCommand;
+import org.usfirst.frc.team4373.robot.commands.profiles.TestProfile;
 import org.usfirst.frc.team4373.robot.input.filter.FineGrainedPiecewiseFilter;
 import org.usfirst.frc.team4373.robot.input.hid.RooJoystick;
+import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
 /**
  * OI encapsulates various inputs and outputs.
@@ -16,6 +20,7 @@ public class OI {
     private RooJoystick<FineGrainedPiecewiseFilter> driveJoystick;
     private RooJoystick operatorJoystick;
     private Gyro gyro;
+    private Button mpButton;
 
     private OI() {
         this.driveJoystick =
@@ -24,6 +29,11 @@ public class OI {
                 new RooJoystick<>(RobotMap.OPERATOR_JOYSTICK_PORT,
                         new FineGrainedPiecewiseFilter());
         this.gyro = new AnalogGyro(RobotMap.GYRO_CHANNEL);
+        this.mpButton = new JoystickButton(this.driveJoystick, 5);
+        this.mpButton.whenPressed(new MotionProfileCommand(
+                new Drivetrain.MotorID[] {Drivetrain.MotorID.RIGHT_1, Drivetrain.MotorID.LEFT_1},
+                new TestProfile[] {new TestProfile(), new TestProfile()}));
+
     }
 
     /**
