@@ -23,7 +23,8 @@ public class MotionProfileCommand extends Command {
             this.feeder.start(0, true);
             initialized = true;
         } else {
-            this.drivetrain.setMotionProfileValue(feeder.getSetValue());
+            this.drivetrain.setMotionProfileValue(Drivetrain.MotorID.RIGHT_1,
+                    feeder.getSetValue());
         }
         feeder.control();
     }

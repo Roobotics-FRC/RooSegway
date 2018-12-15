@@ -1,8 +1,15 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
+# This script converts a motion profile CSV from https://github.com/vannaka/Motion_Profile_Generator to a Java class
+#
+
+__author__ = "aaplmath"
+__version__ = "0.1"
 
 import sys
 
-if (len(sys.argv) < 2):
+if (len(sys.argv) != 3):
   print('Usage: generate_motion_profile_class.py [csv file path] [name of class to generate]')
   sys.exit()
 
@@ -12,7 +19,7 @@ with open(sys.argv[1]) as csvFile:
     matrix = [[float(file_str) for file_str in line.replace('\n', '').split(',')] for line in rawFile]
     del matrix[0]
 
-# matrix [duration(s), x, y, position, velocity, acceleration, jerk, heading]
+# matrix elements are of the format [duration(s), x, y, position, velocity, acceleration, jerk, heading]
 
 tab = '    '
 

@@ -138,9 +138,24 @@ public class Drivetrain extends Subsystem {
         this.left1.follow(this.right1, FollowerType.AuxOutput1);
     }
 
-    public void setMotionProfileValue(SetValueMotionProfile svmpValue) {
-        this.right1.set(ControlMode.MotionProfileArc, svmpValue.value);
-        this.left1.follow(this.right1, FollowerType.AuxOutput1);
+    /**
+     * Sets motion profile control mdoe on a primary motor using auxiliary output.
+     * @param primary the primary motor (must be a "1" motor).
+     * @param svmpValue the SetValueMotionProfile value to set.
+     */
+    public void setMotionProfileValue(MotorID primary, SetValueMotionProfile svmpValue) {
+        switch (primary) {
+            case RIGHT_1:
+                this.right1.set(ControlMode.MotionProfileArc, svmpValue.value);
+                this.left1.follow(this.right1, FollowerType.AuxOutput1);
+                break;
+            case LEFT_1:
+                this.right1.set(ControlMode.MotionProfileArc, svmpValue.value);
+                this.left1.follow(this.right1, FollowerType.AuxOutput1);
+                break;
+            default:
+                break;
+        }
     }
 
     /**

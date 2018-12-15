@@ -76,7 +76,6 @@ public class MotionProfileFeeder {
                 case 0:
                     if (start) {
                         start = false;
-
                         setValue = SetValueMotionProfile.Disable;
                         startFilling();
 
