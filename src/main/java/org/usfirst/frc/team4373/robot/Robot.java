@@ -17,7 +17,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void robotInit() {
-        Drivetrain.getInstance();
+        Drivetrain.getInstance().shift(Drivetrain.Gear.LOW);
         OI.getOI().getGyro().calibrate();
     }
 
