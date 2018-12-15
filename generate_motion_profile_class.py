@@ -17,7 +17,7 @@ with open(sys.argv[1]) as csvFile:
 tab = '    '
 
 java_code = 'package org.usfirst.frc.team4373.robot.commands.profiles;\n\n'
-java_code += 'class ' + sys.argv[2] + ' extends MotionProfile {\n'
+java_code += 'public class ' + sys.argv[2] + ' extends MotionProfile {\n'
 java_code += tab + 'public int numPoints = ' + str(len(matrix)) + ';\n'
 java_code += tab + 'public double[][] points = new double[][]{\n'
 

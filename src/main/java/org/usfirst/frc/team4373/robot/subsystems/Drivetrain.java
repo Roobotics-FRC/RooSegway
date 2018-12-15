@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4373.robot.subsystems;
 
 import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -137,6 +138,11 @@ public class Drivetrain extends Subsystem {
         this.left1.follow(this.right1, FollowerType.AuxOutput1);
     }
 
+    public void setMotionProfileValue(SetValueMotionProfile svmpValue) {
+        this.right1.set(ControlMode.MotionProfileArc, svmpValue.value);
+        this.left1.follow(this.right1, FollowerType.AuxOutput1);
+    }
+
     /**
      * Sets all motor outputs to 0.
      */
@@ -168,6 +174,29 @@ public class Drivetrain extends Subsystem {
             return arr[0];
         }
         return 0;
+    }
+
+    /**
+     * Gets the WPI_TalonSRX object associated with the specified motor.
+     * <p><b>Note</b>: This method should only be used if direct access to the motor is needed.
+     * It is probably preferable to use on of the predefined getters for
+     * specific sensor/output values if possible.</p>
+     * @param motor the motor to access.
+     * @return the object corresponding to the selected motor.
+     */
+    public WPI_TalonSRX getTalon(MotorID motor) {
+        switch (motor) {
+            case RIGHT_1:
+                return right1;
+            case RIGHT_2:
+                return right2;
+            case LEFT_1:
+                return left1;
+            case LEFT_2:
+                return left2;
+            default:
+                return null;
+        }
     }
 
     /**

@@ -15,9 +15,11 @@ public class MotionProfileFeeder {
 
     private MotionProfileStatus status = new MotionProfileStatus();
 
+    // For potential logging purposes
     double curPos = 0;
     double curHead = 0;
     double curVel = 0;
+
     double endHeading = 0;
 
     private WPI_TalonSRX primaryTalon;
@@ -25,6 +27,7 @@ public class MotionProfileFeeder {
 
     private int state = 0;
     private int loopTimeout = -1;
+    private boolean completed = false;
 
     private boolean start = false;
     private boolean forward = false;
@@ -38,8 +41,14 @@ public class MotionProfileFeeder {
             primaryTalon.processMotionProfileBuffer();
         }
     }
+
     Notifier notifer = new Notifier(new PeriodicRunnable());
 
+    /**
+     * Constructs a new motion profile feeder.
+     * @param motorController the motor controller on which to run the feeder.
+     * @param profile the profile to run.
+     */
     public MotionProfileFeeder(WPI_TalonSRX motorController, MotionProfile profile) {
         this.primaryTalon = motorController;
         this.primaryTalon.changeMotionControlFramePeriod(5);
@@ -47,6 +56,9 @@ public class MotionProfileFeeder {
         notifer.startPeriodic(0.005);
     }
 
+    /**
+     * Primary execution method of the motion profile feeder—call periodically.
+     */
     public void control() {
         primaryTalon.getMotionProfileStatus(status);
 
@@ -87,6 +99,7 @@ public class MotionProfileFeeder {
                         setValue = SetValueMotionProfile.Hold;
                         state = 0;
                         loopTimeout = -1;
+                        completed = true;
                     }
                     break;
                 default:
@@ -95,21 +108,39 @@ public class MotionProfileFeeder {
             primaryTalon.getMotionProfileStatus(status);
             curHead = primaryTalon.getActiveTrajectoryHeading();
             curPos = primaryTalon.getActiveTrajectoryPosition();
+            curVel = primaryTalon.getActiveTrajectoryVelocity();
         }
     }
 
+    /**
+     * Reset the Feeder for next run-through.
+     */
     public void reset() {
         this.primaryTalon.clearMotionProfileTrajectories();
         this.setValue = SetValueMotionProfile.Disable;
         this.state = 0;
         this.loopTimeout = -1;
         this.start = false;
+        this.completed = false;
     }
 
+    /**
+     * Initialize the feeder.
+     * @param endHeading the end heading.
+     * @param forward whether it's forward.
+     */
     public void start(double endHeading, boolean forward) {
         start = true;
         this.forward = forward;
         this.endHeading = endHeading;
+    }
+
+    /**
+     * Returns whether the motion profile has finished executing.
+     * @return whether the profile playback is done.
+     */
+    public boolean isComplete() {
+        return this.completed;
     }
 
     private void startFilling() {
@@ -129,7 +160,7 @@ public class MotionProfileFeeder {
         primaryTalon.configMotionProfileTrajectoryPeriod(RobotMap.MOTION_PROFILE_BASE_TRAJ_TIMEOUT,
                 RobotMap.TALON_TIMEOUT_MS);
 
-        double finalPositionRot = profile[totalCnt-1][0];
+        double finalPositionRot = profile[totalCnt - 1][0];
 
         for (int i = 0; i < totalCnt; ++i) {
             double direction = forward ? +1 : -1;
@@ -158,13 +189,13 @@ public class MotionProfileFeeder {
         TrajectoryDuration retVal = TrajectoryDuration.Trajectory_Duration_0ms;
         retVal = retVal.valueOf(durationMs);
         if (retVal.value != durationMs) {
-            DriverStation.reportError("Trajectory Duration not supported -" +
-                    "use configMotionProfileTrajectoryPeriod instead", false);
+            DriverStation.reportError("Trajectory Duration not supported -"
+                    + "use configMotionProfileTrajectoryPeriod instead", false);
         }
         return retVal;
     }
 
-    boolean isMotionProfileMode(ControlMode controlMode) {
+    private boolean isMotionProfileMode(ControlMode controlMode) {
         return controlMode == ControlMode.MotionProfile
                 || controlMode == ControlMode.MotionProfileArc;
     }
