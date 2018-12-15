@@ -34,7 +34,7 @@ public class VelocityHeadingSetpointFeeder extends Command {
          * velocity setpoint is in units/100ms */
         // 1500 RPM in either direction
         double targetVelocityNative = SmartDashboard.getNumber("% of Full Speed", 0)
-                * 4096 * 5300 / 24 / 600;
+                * RobotMap.ENCODER_UNITS_PER_ROTATION * 5300 / 24 / 600;
         double targetAngleNative = SmartDashboard.getNumber("Target Angle", 0)
                 / 360 * RobotMap.RESOLUTION_UNITS_PER_ROTATION;
 
