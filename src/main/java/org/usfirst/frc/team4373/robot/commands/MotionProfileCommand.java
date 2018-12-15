@@ -9,33 +9,41 @@ public class MotionProfileCommand extends Command {
 
     private Drivetrain drivetrain;
 
-    private Drivetrain.MotorID motorID;
-    private MotionProfileFeeder feeder;
+    private Drivetrain.MotorID[] motorIDs;
+    private MotionProfileFeeder[] feeders;
 
     private boolean initialized = false;
+    private boolean illegalInitialization;
 
     /**
      * Instantiates a new MotionProfileCommand.
-     * @param motorID the array of IDs of the motors to use.
-     * @param prof the profiles to use with the motors at the corresponding indices.
+     * @param motorIDs the array of IDs of the motors to use.
+     * @param profs the profiles to use with the motors at the corresponding indices.
      */
-    public MotionProfileCommand(Drivetrain.MotorID motorID, MotionProfile prof) {
+    public MotionProfileCommand(Drivetrain.MotorID[] motorIDs, MotionProfile[] profs) {
+        illegalInitialization = motorIDs.length != profs.length;
         requires(this.drivetrain = Drivetrain.getInstance());
-        this.motorID = motorID;
-        this.feeder = new MotionProfileFeeder(this.drivetrain.getTalon(this.motorID), prof);
+        this.motorIDs = motorIDs;
+        this.feeders = new MotionProfileFeeder[motorIDs.length];
+        for (int i = 0; i < motorIDs.length; ++i) {
+            this.feeders[i] = new MotionProfileFeeder(
+                    this.drivetrain.getTalon(this.motorIDs[i]), profs[i]);
+        }
     }
 
     @Override
     public void execute() {
-        if (!initialized) {
-            this.feeder.reset();
-            this.feeder.start();
-            initialized = true;
-        } else {
-            this.drivetrain.setMotionProfileValue(motorID,
-                    feeder.getSetValue());
+        for (int i = 0; i < feeders.length; ++i) {
+            if (!initialized) {
+                this.feeders[i].reset();
+                this.feeders[i].start();
+                initialized = true;
+            } else {
+                this.drivetrain.setMotionProfileValue(motorIDs[i],
+                        feeders[i].getSetValue());
+            }
+            feeders[i].control();
         }
-        feeder.control();
         SmartDashboard.putNumber("Left1/Power",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_1));
         SmartDashboard.putNumber("Left2/Power",
@@ -48,7 +56,11 @@ public class MotionProfileCommand extends Command {
 
     @Override
     protected boolean isFinished() {
-        return feeder.isComplete();
+        boolean finished = true;
+        for (int i = 0; i < feeders.length; ++i) {
+            finished = finished && feeders[i].isComplete();
+        }
+        return finished || illegalInitialization;
     }
 
     @Override

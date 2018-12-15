@@ -70,32 +70,37 @@ public class Drivetrain extends Subsystem {
         this.right1.configMotionAcceleration(2000, RobotMap.TALON_TIMEOUT_MS);
         this.right1.configMotionCruiseVelocity(2000, RobotMap.TALON_TIMEOUT_MS);
 
-        // Set up quad encoder on left -> Remote Sensor 0
-        catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.configRemoteFeedbackFilter(this.left1.getDeviceID(),
-                RemoteSensorSource.TalonSRX_SelectedSensor,
-                RobotMap.REMOTE_SENSOR_0, RobotMap.TALON_TIMEOUT_MS));
+        this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+                RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+                RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS);
 
-        // Set up pigeon on Remote Sensor 1
-        catchError(this.right1.configRemoteFeedbackFilter(this.pigeon.getDeviceID(),
-                RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_1,
-                RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor1,
-                RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.configSelectedFeedbackCoefficient(
-                RobotMap.RESOLUTION_UNITS_PER_ROTATION / RobotMap.PIGEON_UNITS_PER_ROTATION,
-                RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
-
-        // Config averaging from remote sensor and quad encoder on right
-        catchError(this.right1.configSensorTerm(SensorTerm.Sum0, FeedbackDevice.RemoteSensor0,
-                RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.configSensorTerm(SensorTerm.Sum1, FeedbackDevice.QuadEncoder,
-                RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.configSelectedFeedbackCoefficient(0.5, RobotMap.VELOCITY_PID_IDX,
-                RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.SensorSum,
-                RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+        // // Set up quad encoder on left -> Remote Sensor 0
+        // catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+        //         RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+        // catchError(this.right1.configRemoteFeedbackFilter(this.left1.getDeviceID(),
+        //         RemoteSensorSource.TalonSRX_SelectedSensor,
+        //         RobotMap.REMOTE_SENSOR_0, RobotMap.TALON_TIMEOUT_MS));
+        //
+        // // Set up pigeon on Remote Sensor 1
+        // catchError(this.right1.configRemoteFeedbackFilter(this.pigeon.getDeviceID(),
+        //         RemoteSensorSource.GadgeteerPigeon_Yaw, RobotMap.REMOTE_SENSOR_1,
+        //         RobotMap.TALON_TIMEOUT_MS));
+        // catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor1,
+        //         RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+        // catchError(this.right1.configSelectedFeedbackCoefficient(
+        //         RobotMap.RESOLUTION_UNITS_PER_ROTATION / RobotMap.PIGEON_UNITS_PER_ROTATION,
+        //         RobotMap.HEADING_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
+        //
+        // // Config averaging from remote sensor and quad encoder on right
+        // catchError(this.right1.configSensorTerm(SensorTerm.Sum0, FeedbackDevice.RemoteSensor0,
+        //         RobotMap.TALON_TIMEOUT_MS));
+        // catchError(this.right1.configSensorTerm(SensorTerm.Sum1, FeedbackDevice.QuadEncoder,
+        //         RobotMap.TALON_TIMEOUT_MS));
+        // catchError(this.right1.configSelectedFeedbackCoefficient(0.5, RobotMap.VELOCITY_PID_IDX,
+        //         RobotMap.TALON_TIMEOUT_MS));
+        // catchError(this.right1.configSelectedFeedbackSensor(FeedbackDevice.SensorSum,
+        //         RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS));
 
         catchError(this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
