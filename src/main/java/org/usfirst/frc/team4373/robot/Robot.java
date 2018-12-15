@@ -19,6 +19,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         Drivetrain.getInstance().shift(Drivetrain.Gear.LOW);
         OI.getOI().getGyro().calibrate();
+        SmartDashboard.putNumber("highGearValue", 0.2);
     }
 
     @Override

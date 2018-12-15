@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.commands.JoystickControl;
 
@@ -133,8 +134,9 @@ public class Drivetrain extends Subsystem {
                 this.rightServo.set(0);
                 break;
             case HIGH:
-                this.leftServo.set(1);
-                this.rightServo.set(1);
+                double highGear = SmartDashboard.getNumber("highGearValue", 0.2);
+                this.leftServo.set(highGear);
+                this.rightServo.set(highGear);
                 break;
             default:
                 break;
