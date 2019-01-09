@@ -20,8 +20,6 @@ public class MotionProfileFeeder {
     double curHead = 0;
     double curVel = 0;
 
-    double endHeading = 0;
-
     private WPI_TalonSRX primaryTalon;
     private MotionProfile profile;
 
@@ -30,7 +28,6 @@ public class MotionProfileFeeder {
     private boolean completed = false;
 
     private boolean start = false;
-    private boolean forward = false;
 
     private SetValueMotionProfile setValue = SetValueMotionProfile.Disable;
     private int minPointsInTalon = 5;
@@ -150,8 +147,6 @@ public class MotionProfileFeeder {
 
         primaryTalon.configMotionProfileTrajectoryPeriod(RobotMap.MOTION_PROFILE_BASE_TRAJ_TIMEOUT,
                 RobotMap.TALON_TIMEOUT_MS);
-
-        double finalPositionRot = profile.getPoints()[profile.getNumPoints() - 1][0];
 
         for (int i = 0; i < profile.getNumPoints(); ++i) {
             double positionRot = profile.getPoints()[i][0];
