@@ -33,7 +33,7 @@ public class MotionProfileFeeder {
     private boolean forward = false;
 
     private SetValueMotionProfile setValue = SetValueMotionProfile.Disable;
-    private int minPointsInTalon = 5;
+    private int minPointsInTalon = 20;
     private int numLoopsTimeout = 10;
 
     class PeriodicRunnable implements java.lang.Runnable {
@@ -96,7 +96,7 @@ public class MotionProfileFeeder {
                     }
                     if (status.activePointValid && status.isLast) {
                         setValue = SetValueMotionProfile.Hold;
-                        state = 0;
+                        // state = 0;
                         loopTimeout = -1;
                         completed = true;
                     }
@@ -104,7 +104,6 @@ public class MotionProfileFeeder {
                 default:
                     break;
             }
-            primaryTalon.getMotionProfileStatus(status);
             curHead = primaryTalon.getActiveTrajectoryHeading();
             curPos = primaryTalon.getActiveTrajectoryPosition();
             curVel = primaryTalon.getActiveTrajectoryVelocity();
@@ -162,19 +161,18 @@ public class MotionProfileFeeder {
             double positionRot = profile.getPoints()[i][0];
             double velocityRPM = profile.getPoints()[i][1];
             double heading = endHeading * positionRot / finalPositionRot;
-            point.position = direction * positionRot * RobotMap.ENCODER_UNITS_PER_ROTATION * 2;
 
+            point.position = direction * positionRot * RobotMap.ENCODER_UNITS_PER_ROTATION * 2;
             // Convert to units per 100 ms
             point.velocity = direction * velocityRPM * RobotMap.ENCODER_UNITS_PER_ROTATION / 600.0;
             point.auxiliaryPos = heading; /* scaled such that 3600 => 360 deg */
             point.profileSlotSelect0 = RobotMap.SLOT_MOTPROF;
             point.profileSlotSelect1 = RobotMap.SLOT_TURNING;
             point.timeDur = getTrajectoryDuration((int)profile.getPoints()[i][2]);
-            point.zeroPos = false;
-            if (i == 0) point.zeroPos = true;
+            point.zeroPos = i == 0;
+            // FOR 2019: point.useAuxPID = true;
 
-            point.isLastPoint = false;
-            if ((i + 1) == profile.getNumPoints()) point.isLastPoint = true;
+            point.isLastPoint = (i + 1) == profile.getNumPoints();
 
             primaryTalon.pushMotionProfileTrajectory(point);
         }
