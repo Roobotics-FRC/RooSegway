@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.Notifier;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.commands.profiles.MotionProfile;
 
+import java.sql.Driver;
+
 public class MotionProfileFeeder {
 
     private MotionProfileStatus status = new MotionProfileStatus();
@@ -60,11 +62,10 @@ public class MotionProfileFeeder {
      * Primary execution method of the motion profile feeder—call periodically.
      */
     public void control() {
-        primaryTalon.getMotionProfileStatus(status);
-
+        this.primaryTalon.getMotionProfileStatus(status);
         if (loopTimeout == 0) {
             DriverStation.reportError("[Motion Profile] No Progress", false);
-        } else {
+        } else if (loopTimeout > 0) {
             --loopTimeout;
         }
 
@@ -73,7 +74,7 @@ public class MotionProfileFeeder {
             loopTimeout = -1;
         } else {
             switch (state) {
-                case 0:
+                case 0: // initialization
                     if (start) {
                         start = false;
                         setValue = SetValueMotionProfile.Disable;
@@ -83,14 +84,14 @@ public class MotionProfileFeeder {
                         loopTimeout = numLoopsTimeout;
                     }
                     break;
-                case 1:
+                case 1: // preload
                     if (status.btmBufferCnt > minPointsInTalon) {
                         setValue = SetValueMotionProfile.Enable;
                         state = 2;
                         loopTimeout = numLoopsTimeout;
                     }
                     break;
-                case 2:
+                case 2: // fill
                     if (!status.isUnderrun) {
                         loopTimeout = numLoopsTimeout;
                     }
@@ -107,6 +108,8 @@ public class MotionProfileFeeder {
             curHead = primaryTalon.getActiveTrajectoryHeading();
             curPos = primaryTalon.getActiveTrajectoryPosition();
             curVel = primaryTalon.getActiveTrajectoryVelocity();
+            System.out.println("\tstate: " + state + "\thead: "
+                    + curHead + "\tpos: " + curPos + "\tcurVel: " + curVel);
         }
     }
 
@@ -168,6 +171,8 @@ public class MotionProfileFeeder {
             point.auxiliaryPos = heading; /* scaled such that 3600 => 360 deg */
             point.profileSlotSelect0 = RobotMap.SLOT_MOTPROF;
             point.profileSlotSelect1 = RobotMap.SLOT_TURNING;
+
+            // FOR 2019: timeDur is no longer a thing, at least not like this
             point.timeDur = getTrajectoryDuration((int)profile.getPoints()[i][2]);
             point.zeroPos = i == 0;
             // FOR 2019: point.useAuxPID = true;

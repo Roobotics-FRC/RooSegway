@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.commands.MotionProfileCommand;
+import org.usfirst.frc.team4373.robot.commands.VelocityHeadingSetpointFeeder;
 import org.usfirst.frc.team4373.robot.commands.profiles.TestProfile;
 
 /**
@@ -322,7 +323,6 @@ public class Drivetrain extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new MotionProfileCommand(MotorID.RIGHT_1,
-                new TestProfile()));
+        setDefaultCommand(new VelocityHeadingSetpointFeeder());
     }
 }

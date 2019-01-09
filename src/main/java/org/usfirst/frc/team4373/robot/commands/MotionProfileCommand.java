@@ -26,6 +26,11 @@ public class MotionProfileCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+        System.out.println("Motion Profile Command started");
+    }
+
+    @Override
     public void execute() {
         if (!initialized) {
             this.feeder.reset();
@@ -53,6 +58,7 @@ public class MotionProfileCommand extends Command {
 
     @Override
     protected void end() {
+        System.out.println("Motion Profile Command finished");
         this.drivetrain.zeroMotors();
     }
 
