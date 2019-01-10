@@ -8,9 +8,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
-import org.usfirst.frc.team4373.robot.commands.MotionProfileCommand;
 import org.usfirst.frc.team4373.robot.commands.VelocityHeadingSetpointFeeder;
-import org.usfirst.frc.team4373.robot.commands.profiles.TestProfile;
 
 /**
  * Programmatic representation of physical drivetrain components. Implements TalonSRX-based PID.
@@ -67,8 +65,16 @@ public class Drivetrain extends Subsystem {
         this.left2.setSensorPhase(true);
         this.right1.setSensorPhase(true);
 
+        // Motion magic config (taken from docs)
         this.right1.configMotionAcceleration(2000, RobotMap.TALON_TIMEOUT_MS);
         this.right1.configMotionCruiseVelocity(2000, RobotMap.TALON_TIMEOUT_MS);
+
+        // Ensure non-stale data (taken from docs)
+        right1.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, RobotMap.TALON_TIMEOUT_MS);
+        right1.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20, RobotMap.TALON_TIMEOUT_MS);
+        right1.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, RobotMap.TALON_TIMEOUT_MS);
+        right1.setStatusFramePeriod(StatusFrame.Status_10_Targets, 20, RobotMap.TALON_TIMEOUT_MS);
+        left1.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, RobotMap.TALON_TIMEOUT_MS);
 
         // Set up quad encoder on left -> Remote Sensor 0
         catchError(this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
@@ -107,6 +113,22 @@ public class Drivetrain extends Subsystem {
         catchError(this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
 
+        // Configure motion profile PID gains
+        catchError(this.right1.config_kF(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.MOTPROF_PID.kF, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kP(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.MOTPROF_PID.kP, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kI(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.MOTPROF_PID.kI, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kD(RobotMap.VELOCITY_PID_IDX,
+                RobotMap.MOTPROF_PID.kD, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_IntegralZone(RobotMap.SLOT_MOTPROF,
+                RobotMap.MOTPROF_PID.integralZone, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configClosedLoopPeakOutput(RobotMap.SLOT_MOTPROF,
+                RobotMap.MOTPROF_PID.peakOut, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configAllowableClosedloopError(RobotMap.SLOT_MOTPROF,
+                0, RobotMap.TALON_TIMEOUT_MS));
+
         // Configure heading PID gains
         catchError(this.right1.config_kF(RobotMap.HEADING_PID_IDX,
                 RobotMap.HEADING_PID.kF, RobotMap.TALON_TIMEOUT_MS));
@@ -116,16 +138,13 @@ public class Drivetrain extends Subsystem {
                 RobotMap.HEADING_PID.kI, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.config_kD(RobotMap.HEADING_PID_IDX,
                 RobotMap.HEADING_PID.kD, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_IntegralZone(RobotMap.SLOT_TURNING,
+                RobotMap.HEADING_PID.integralZone, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configClosedLoopPeakOutput(RobotMap.SLOT_TURNING,
+                RobotMap.HEADING_PID.peakOut, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.configAllowableClosedloopError(RobotMap.SLOT_TURNING,
+                0, RobotMap.TALON_TIMEOUT_MS));
 
-        // Configure speed PID gains
-        catchError(this.right1.config_kF(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kP(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kI(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kD(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
 
         catchError(this.right1.configAuxPIDPolarity(false, RobotMap.TALON_TIMEOUT_MS));
     }

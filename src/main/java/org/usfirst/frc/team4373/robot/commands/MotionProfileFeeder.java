@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.Notifier;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.commands.profiles.MotionProfile;
 
-import java.sql.Driver;
-
 public class MotionProfileFeeder {
 
     private MotionProfileStatus status = new MotionProfileStatus();
@@ -53,8 +51,8 @@ public class MotionProfileFeeder {
      */
     public MotionProfileFeeder(WPI_TalonSRX motorController, MotionProfile profile) {
         this.primaryTalon = motorController;
-        this.primaryTalon.changeMotionControlFramePeriod(5);
         this.profile = profile;
+        this.primaryTalon.changeMotionControlFramePeriod(5);
         notifer.startPeriodic(0.005);
     }
 
@@ -154,7 +152,7 @@ public class MotionProfileFeeder {
 
         primaryTalon.clearMotionProfileTrajectories();
 
-        primaryTalon.configMotionProfileTrajectoryPeriod(RobotMap.MOTION_PROFILE_BASE_TRAJ_TIMEOUT,
+        primaryTalon.configMotionProfileTrajectoryPeriod(RobotMap.MOTPROF_BASE_TRAJ_DURATION,
                 RobotMap.TALON_TIMEOUT_MS);
 
         double finalPositionRot = profile.getPoints()[profile.getNumPoints() - 1][0];

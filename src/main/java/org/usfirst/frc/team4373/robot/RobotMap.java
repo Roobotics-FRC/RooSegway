@@ -11,12 +11,16 @@ public class RobotMap {
         public double kI;
         public double kD;
         public double kF;
+        public int integralZone;
+        public double peakOut;
 
-        PID(double kF, double kP, double kI, double kD) {
+        PID(double kF, double kP, double kI, double kD, int integralZone, double peakOut) {
             this.kF = kF;
             this.kP = kP;
             this.kI = kI;
             this.kD = kD;
+            this.integralZone = integralZone;
+            this.peakOut = peakOut;
         }
     }
 
@@ -34,8 +38,8 @@ public class RobotMap {
     public static final int RIGHT_DRIVE_MOTOR_REAR = 9;
 
     // PID- and motion profiling-related costants
-    public static final PID VELOCITY_PID = new PID(0, 1, 0, 0);
-    public static final PID HEADING_PID = new PID(0, 1, 0, 0);
+    public static final PID MOTPROF_PID = new PID(0, 1, 0, 0, 300, 0.5);
+    public static final PID HEADING_PID = new PID(0, 1, 0, 0, 400, 1.0);
     // At 100% output, 503 native units = 512 sensor units
     public static final int VELOCITY_PID_IDX = 0;
     public static final int HEADING_PID_IDX = 0;
@@ -46,7 +50,7 @@ public class RobotMap {
     public static final int SLOT_VELOCITY = 2;
     public static final int SLOT_MOTPROF = 3;
     // Motion profile timing
-    public static final int MOTION_PROFILE_BASE_TRAJ_TIMEOUT = 0;
+    public static final int MOTPROF_BASE_TRAJ_DURATION = 0;
 
     // Turning
     // If these are wrong, blame these people: https://github.com/CrossTheRoadElec/
