@@ -2,6 +2,7 @@ package org.usfirst.frc.team4373.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team4373.robot.Robot;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
@@ -23,47 +24,29 @@ public class SetpointFeeder extends Command {
     @Override
     public void initialize() {
         this.drivetrain.zeroMotors();
-        this.drivetrain.resetPigeon();
     }
 
     @Override
     public void execute() {
-        /*
-         * 4096 (Units/Rev) * 5300 (RPM) * 1:24 (gearbox ratio) / 600 (unit of 100ms/min)
-         * in each direction
-         * velocity setpoint is in units/100ms */
-        // 1500 RPM in either direction
-        double targetVelocityNative = SmartDashboard.getNumber("% of Full Speed", 0)
-                * 4096 * 5300 / 24 / 600;
-        double targetAngleNative = SmartDashboard.getNumber("Target Angle", 0)
-                / 360 * RobotMap.RESOLUTION_UNITS_PER_ROTATION;
+        double targetPosNative = SmartDashboard.getNumber("Target Position (in)", 0)
+                / RobotMap.ENCODER_UNITS_TO_INCHES;
 
-        this.drivetrain.setSetpoints(targetVelocityNative, targetAngleNative);
+        this.drivetrain.setPosSetpoint(targetPosNative);
 
-        SmartDashboard.putNumber("Yaw", this.drivetrain.getPigeonYaw());
-        SmartDashboard.putNumber("Right1/Velocity",
-                drivetrain.getSensorVelocity(Drivetrain.MotorID.RIGHT_1,
-                        RobotMap.VELOCITY_PID_IDX));
-        SmartDashboard.putNumber("Left1/Velocity",
-                drivetrain.getSensorVelocity(Drivetrain.MotorID.LEFT_1,
-                        RobotMap.VELOCITY_PID_IDX));
-        SmartDashboard.putNumber("Right1/Angle",
-                drivetrain.getSensorPosition(Drivetrain.MotorID.RIGHT_1,
-                        RobotMap.HEADING_PID_IDX));
         SmartDashboard.putNumber("Right1/Perc Output",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.RIGHT_1));
         SmartDashboard.putNumber("Right2/Perc Output",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.RIGHT_2));
-        SmartDashboard.putNumber("Left1/Perc Output",
+        SmartDashboard.putNumber("Left/Perc Output",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_1));
         SmartDashboard.putNumber("Left2/Perc Output",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_2));
-        SmartDashboard.putNumber("Right1/Vel Error",
+        SmartDashboard.putNumber("Right1/ClosedLoopErr",
                 this.drivetrain.getClosedLoopError(Drivetrain.MotorID.RIGHT_1,
-                        RobotMap.VELOCITY_PID_IDX));
-        SmartDashboard.putNumber("Right1/Head Error",
-                this.drivetrain.getClosedLoopError(Drivetrain.MotorID.RIGHT_1,
-                        RobotMap.HEADING_PID_IDX));
+                        RobotMap.POSITION_PID_IDX));
+        SmartDashboard.putNumber("Right1/SensorPos",
+                this.drivetrain.getSensorPosition(Drivetrain.MotorID.RIGHT_1,
+                        RobotMap.POSITION_PID_IDX));
     }
 
     @Override

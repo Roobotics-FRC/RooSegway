@@ -18,8 +18,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void robotInit() {
         Drivetrain.getInstance();
-        SmartDashboard.putNumber("% of Full Speed", 0);
-        SmartDashboard.putNumber("Target Angle", 0);
+        SmartDashboard.putNumber("Target Position (in)", 0);
     }
 
     @Override
