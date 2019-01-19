@@ -35,8 +35,8 @@ public class Drivetrain extends Subsystem {
 
     private Drivetrain() {
         // right1 and right2 are flipped because the rear has the encoder on it
-        this.right1 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_REAR);
-        this.right2 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_FRONT);
+        this.right1 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_FRONT);
+        this.right2 = new WPI_TalonSRX(RobotMap.RIGHT_DRIVE_MOTOR_REAR);
         this.left1 = new WPI_TalonSRX(RobotMap.LEFT_DRIVE_MOTOR_FRONT);
         this.left2 = new WPI_TalonSRX(RobotMap.LEFT_DRIVE_MOTOR_REAR);
 
