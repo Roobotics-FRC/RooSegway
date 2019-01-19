@@ -70,9 +70,12 @@ public class Drivetrain extends Subsystem {
         this.right1.configMotionCruiseVelocity(2000, RobotMap.TALON_TIMEOUT_MS);
 
         // Ensure non-stale data (taken from docs)
-        right1.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, RobotMap.TALON_TIMEOUT_MS);
-        right1.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20, RobotMap.TALON_TIMEOUT_MS);
-        right1.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, RobotMap.TALON_TIMEOUT_MS);
+        right1.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20,
+                RobotMap.TALON_TIMEOUT_MS);
+        right1.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20,
+                RobotMap.TALON_TIMEOUT_MS);
+        right1.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20,
+                RobotMap.TALON_TIMEOUT_MS);
         right1.setStatusFramePeriod(StatusFrame.Status_10_Targets, 20, RobotMap.TALON_TIMEOUT_MS);
         left1.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, RobotMap.TALON_TIMEOUT_MS);
 
