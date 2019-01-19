@@ -50,8 +50,8 @@ public class Drivetrain extends Subsystem {
         this.left2.setNeutralMode(NeutralMode.Brake);
 
         // Invert all motors
-        this.right1.setInverted(false);
-        this.right2.setInverted(false);
+        this.right1.setInverted(true);
+        this.right2.setInverted(true);
         this.left1.setInverted(false);
         this.left2.setInverted(false);
 
