@@ -5,7 +5,8 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.usfirst.frc.team4373.robot.commands.MotionProfileCommand;
-import org.usfirst.frc.team4373.robot.commands.profiles.TestProfile;
+import org.usfirst.frc.team4373.robot.commands.profiles.MotionProfile;
+import org.usfirst.frc.team4373.robot.commands.profiles.Test2019Right;
 import org.usfirst.frc.team4373.robot.input.filter.FineGrainedPiecewiseFilter;
 import org.usfirst.frc.team4373.robot.input.hid.RooJoystick;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
@@ -32,7 +33,7 @@ public class OI {
         this.mpButton = new JoystickButton(this.driveJoystick, 5);
         this.mpButton.whenPressed(new MotionProfileCommand(
                 new Drivetrain.MotorID[] {Drivetrain.MotorID.RIGHT_1, Drivetrain.MotorID.LEFT_1},
-                new TestProfile[] {new TestProfile(), new TestProfile()}));
+                new MotionProfile[] {new Test2019Right(), new Test2019Right()}));
 
     }
 

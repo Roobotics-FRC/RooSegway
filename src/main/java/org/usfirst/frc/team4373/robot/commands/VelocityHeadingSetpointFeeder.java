@@ -43,10 +43,10 @@ public class VelocityHeadingSetpointFeeder extends Command {
         SmartDashboard.putNumber("Yaw", this.drivetrain.getPigeonYaw());
         SmartDashboard.putNumber("Right1/Velocity",
                 drivetrain.getSensorVelocity(Drivetrain.MotorID.RIGHT_1,
-                        RobotMap.VELOCITY_PID_IDX));
+                        RobotMap.PID_LOOP_IDX));
         SmartDashboard.putNumber("Left1/Velocity",
                 drivetrain.getSensorVelocity(Drivetrain.MotorID.LEFT_1,
-                        RobotMap.VELOCITY_PID_IDX));
+                        RobotMap.PID_LOOP_IDX));
         SmartDashboard.putNumber("Right1/Angle",
                 drivetrain.getSensorPosition(Drivetrain.MotorID.RIGHT_1,
                         RobotMap.HEADING_PID_IDX));
@@ -60,7 +60,7 @@ public class VelocityHeadingSetpointFeeder extends Command {
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_2));
         SmartDashboard.putNumber("Right1/Vel Error",
                 this.drivetrain.getClosedLoopError(Drivetrain.MotorID.RIGHT_1,
-                        RobotMap.VELOCITY_PID_IDX));
+                        RobotMap.PID_LOOP_IDX));
         SmartDashboard.putNumber("Right1/Head Error",
                 this.drivetrain.getClosedLoopError(Drivetrain.MotorID.RIGHT_1,
                         RobotMap.HEADING_PID_IDX));

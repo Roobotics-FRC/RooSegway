@@ -8,9 +8,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team4373.robot.RobotMap;
-import org.usfirst.frc.team4373.robot.commands.MotionProfileCommand;
+import org.usfirst.frc.team4373.robot.commands.DrivetrainCommand;
 import org.usfirst.frc.team4373.robot.commands.VelocityHeadingSetpointFeeder;
-import org.usfirst.frc.team4373.robot.commands.profiles.TestProfile;
 
 /**
  * Programmatic representation of physical drivetrain components. Implements TalonSRX-based PID.
@@ -62,18 +61,15 @@ public class Drivetrain extends Subsystem {
         this.right2.follow(this.right1);
         this.left2.follow(this.left1);
 
+        this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+                RobotMap.PID_LOOP_IDX, RobotMap.TALON_TIMEOUT_MS);
+        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+                RobotMap.PID_LOOP_IDX, RobotMap.TALON_TIMEOUT_MS);
+
         // Sensor phases
         this.left1.setSensorPhase(false);
         this.left2.setSensorPhase(true);
         this.right1.setSensorPhase(true);
-
-        this.right1.configMotionAcceleration(2000, RobotMap.TALON_TIMEOUT_MS);
-        this.right1.configMotionCruiseVelocity(2000, RobotMap.TALON_TIMEOUT_MS);
-
-        this.right1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS);
-        this.left1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                RobotMap.VELOCITY_PID_IDX, RobotMap.TALON_TIMEOUT_MS);
 
         catchError(this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.right1.configNominalOutputReverse(0, RobotMap.TALON_TIMEOUT_MS));
@@ -85,27 +81,25 @@ public class Drivetrain extends Subsystem {
         catchError(this.left1.configPeakOutputForward(1, RobotMap.TALON_TIMEOUT_MS));
         catchError(this.left1.configPeakOutputReverse(-1, RobotMap.TALON_TIMEOUT_MS));
 
-        // Configure heading PID gains
-        catchError(this.right1.config_kF(RobotMap.HEADING_PID_IDX,
-                RobotMap.HEADING_PID.kF, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kP(RobotMap.HEADING_PID_IDX,
-                RobotMap.HEADING_PID.kP, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kI(RobotMap.HEADING_PID_IDX,
-                RobotMap.HEADING_PID.kI, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kD(RobotMap.HEADING_PID_IDX,
-                RobotMap.HEADING_PID.kD, RobotMap.TALON_TIMEOUT_MS));
+        // Configure right PID gains
+        catchError(this.right1.config_kF(RobotMap.PID_LOOP_IDX,
+                RobotMap.RIGHT_PID.kF, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kP(RobotMap.PID_LOOP_IDX,
+                RobotMap.RIGHT_PID.kP, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kI(RobotMap.PID_LOOP_IDX,
+                RobotMap.RIGHT_PID.kI, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.right1.config_kD(RobotMap.PID_LOOP_IDX,
+                RobotMap.RIGHT_PID.kD, RobotMap.TALON_TIMEOUT_MS));
 
-        // Configure speed PID gains
-        catchError(this.right1.config_kF(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kF, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kP(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kP, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kI(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kI, RobotMap.TALON_TIMEOUT_MS));
-        catchError(this.right1.config_kD(RobotMap.VELOCITY_PID_IDX,
-                RobotMap.VELOCITY_PID.kD, RobotMap.TALON_TIMEOUT_MS));
-
-        catchError(this.right1.configAuxPIDPolarity(false, RobotMap.TALON_TIMEOUT_MS));
+        // Configure left PID gains
+        catchError(this.left1.config_kF(RobotMap.PID_LOOP_IDX,
+                RobotMap.LEFT_PID.kF, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.config_kP(RobotMap.PID_LOOP_IDX,
+                RobotMap.LEFT_PID.kP, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.config_kI(RobotMap.PID_LOOP_IDX,
+                RobotMap.LEFT_PID.kI, RobotMap.TALON_TIMEOUT_MS));
+        catchError(this.left1.config_kD(RobotMap.PID_LOOP_IDX,
+                RobotMap.LEFT_PID.kD, RobotMap.TALON_TIMEOUT_MS));
     }
 
     /**
@@ -119,19 +113,35 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
-     * Sets motion profile control mode on a primary motor using auxiliary output.
-     * @param primary the primary motor (must be a "1" motor).
-     * @param svmpValue the SetValueMotionProfile value to set.
+     * Sets a motor to a percent of its maximum output.
+     * @param motor the motor to set.
+     * @param percent the percent output (-1 to 1) to set it to.
      */
-    public void setMotionProfileValue(MotorID primary, SetValueMotionProfile svmpValue) {
-        switch (primary) {
+    public void setPercentOutput(MotorID motor, double percent) {
+        switch (motor) {
             case RIGHT_1:
-                this.right1.set(ControlMode.MotionProfile, svmpValue.value);
-                // this.left1.follow(this.right1, FollowerType.AuxOutput1);
+                this.right1.set(ControlMode.PercentOutput, percent);
                 break;
             case LEFT_1:
+                this.left1.set(ControlMode.PercentOutput, percent);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Sets motion profile control mode on a primary motor using auxiliary output.
+     * @param motor the primary motor (must be a "1" motor).
+     * @param svmpValue the SetValueMotionProfile value to set.
+     */
+    public void setMotionProfileValue(MotorID motor, SetValueMotionProfile svmpValue) {
+        switch (motor) {
+            case RIGHT_1:
                 this.right1.set(ControlMode.MotionProfile, svmpValue.value);
-                // this.left1.follow(this.right1, FollowerType.AuxOutput1);
+                break;
+            case LEFT_1:
+                this.left1.set(ControlMode.MotionProfile, svmpValue.value);
                 break;
             default:
                 break;
@@ -301,6 +311,6 @@ public class Drivetrain extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new VelocityHeadingSetpointFeeder());
+        setDefaultCommand(new DrivetrainCommand());
     }
 }

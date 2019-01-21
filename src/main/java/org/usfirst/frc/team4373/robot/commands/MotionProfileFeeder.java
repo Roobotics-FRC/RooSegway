@@ -30,7 +30,7 @@ public class MotionProfileFeeder {
     private boolean start = false;
 
     private SetValueMotionProfile setValue = SetValueMotionProfile.Disable;
-    private int minPointsInTalon = 5;
+    private int minPointsInTalon = 20;
     private int numLoopsTimeout = 10;
 
     class PeriodicRunnable implements java.lang.Runnable {
