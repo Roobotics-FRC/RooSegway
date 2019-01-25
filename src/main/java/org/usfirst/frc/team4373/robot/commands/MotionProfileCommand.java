@@ -37,13 +37,20 @@ public class MotionProfileCommand extends Command {
             if (!initialized) {
                 this.feeders[i].reset();
                 this.feeders[i].start();
-                initialized = true;
             } else {
                 this.drivetrain.setMotionProfileValue(motorIDs[i],
                         feeders[i].getSetValue());
             }
             feeders[i].control();
+            SmartDashboard.putNumber("Feeder " + i + " state",
+                    this.feeders[i].getSetValue().value);
+            SmartDashboard.putNumber(i + " right pt vel", this.drivetrain
+                    .getTalon(Drivetrain.MotorID.RIGHT_1).getActiveTrajectoryVelocity());
+            SmartDashboard.putNumber(i + " left pt vel", this.drivetrain
+                    .getTalon(Drivetrain.MotorID.LEFT_1).getActiveTrajectoryVelocity());
         }
+        initialized = true;
+
         SmartDashboard.putNumber("Left1/Power",
                 this.drivetrain.getOutputPercent(Drivetrain.MotorID.LEFT_1));
         SmartDashboard.putNumber("Left2/Power",

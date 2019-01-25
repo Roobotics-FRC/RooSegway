@@ -52,8 +52,8 @@ public class Drivetrain extends Subsystem {
         this.left2.setNeutralMode(NeutralMode.Brake);
 
         // Invert all motors
-        this.right1.setInverted(false);
-        this.right2.setInverted(false);
+        this.right1.setInverted(true);
+        this.right2.setInverted(true);
         this.left1.setInverted(false);
         this.left2.setInverted(false);
 
@@ -67,8 +67,7 @@ public class Drivetrain extends Subsystem {
                 RobotMap.PID_LOOP_IDX, RobotMap.TALON_TIMEOUT_MS);
 
         // Sensor phases
-        this.left1.setSensorPhase(false);
-        this.left2.setSensorPhase(true);
+        this.left1.setSensorPhase(true);
         this.right1.setSensorPhase(true);
 
         catchError(this.right1.configNominalOutputForward(0, RobotMap.TALON_TIMEOUT_MS));
