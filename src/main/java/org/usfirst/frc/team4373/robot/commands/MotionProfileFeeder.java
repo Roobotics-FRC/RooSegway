@@ -12,6 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4373.robot.RobotMap;
 import org.usfirst.frc.team4373.robot.commands.profiles.MotionProfile;
 
+/**
+ * The class responsible for feeding a specified motion profile to a given motor.
+ *
+ * @author aaplmath
+ */
 public class MotionProfileFeeder {
 
     private MotionProfileStatus status = new MotionProfileStatus();
@@ -174,7 +179,7 @@ public class MotionProfileFeeder {
         TrajectoryDuration retVal = TrajectoryDuration.Trajectory_Duration_0ms;
         retVal = retVal.valueOf(durationMs);
         if (retVal.value != durationMs) {
-            DriverStation.reportError("Trajectory Duration not supported -"
+            DriverStation.reportError("Trajectory Duration not supported-"
                     + "use configMotionProfileTrajectoryPeriod instead", false);
         }
         return retVal;

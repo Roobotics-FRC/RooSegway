@@ -5,6 +5,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4373.robot.commands.profiles.MotionProfile;
 import org.usfirst.frc.team4373.robot.subsystems.Drivetrain;
 
+/**
+ * A command that executes one or more motion profiles concurrently on specified motors.
+ *
+ * @author aaplmath
+ */
 public class MotionProfileCommand extends Command {
 
     private Drivetrain drivetrain;
@@ -67,7 +72,9 @@ public class MotionProfileCommand extends Command {
         for (MotionProfileFeeder feeder : feeders) {
             finished = finished && feeder.isComplete();
         }
-        return finished || illegalInitialization;
+        finished = finished || illegalInitialization;
+        if (finished) initialized = false; // this lets us reset everything next time
+        return finished;
     }
 
     @Override

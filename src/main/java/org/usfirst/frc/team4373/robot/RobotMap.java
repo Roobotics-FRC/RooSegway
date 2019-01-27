@@ -33,7 +33,7 @@ public class RobotMap {
     public static final int RIGHT_DRIVE_MOTOR_FRONT = 4;
     public static final int RIGHT_DRIVE_MOTOR_REAR = 9;
 
-    // PID- and motion profiling-related costants
+    // PID- and motion profiling-related constants
     public static final PID LEFT_PID = new PID(0, 1, 0, 0);
     public static final PID RIGHT_PID = new PID(0, 1, 0, 0);
     // At 100% output, 503 native units = 512 sensor units
