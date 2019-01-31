@@ -104,7 +104,7 @@ def switchBack() {
 //noinspection GroovyAssignabilityCheck
 task loadLibraries {
     doLast {
-//    switchTo4373()
+    switchTo4373()
         ssh.settings {
             knownHosts = allowAnyHosts
         }
@@ -117,14 +117,14 @@ task loadLibraries {
             }
         }
         println 'Finished loading libraries'
-//    switchBack()
+    switchBack()
     }
 }
 
 //noinspection GroovyAssignabilityCheck
 task deploy(dependsOn: ':build') {
     doLast {
-//    switchTo4373()
+    switchTo4373()
         ssh.settings {
             knownHosts = allowAnyHosts
         }
@@ -140,6 +140,6 @@ task deploy(dependsOn: ':build') {
             }
         }
         println 'Code successfully loaded and started'
-//    switchBack()
+    switchBack()
     }
 }
